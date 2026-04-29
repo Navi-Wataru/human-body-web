@@ -1,17 +1,110 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 
+const docs = await getCollection('vertical');
+docs.sort((a, b) => a.data.number - b.data.number);
+
+const seriesGroups: Record<string, typeof docs> = {};
+for (const doc of docs) {
+  const s = doc.data.series ?? 'その他';
+  if (!seriesGroups[s]) seriesGroups[s] = [];
+  seriesGroups[s].push(doc);
+}
+
+const seriesOrder = ['日常の体験', '実践者向け', '神経系の階層'];
+const seriesDesc: Record<string, string> = {
+  '日常の体験': '息切れ・空腹・眠気など、誰もが経験する感覚から人体を読む',
+  '実践者向け': 'ボディワーカー・トレーナー・動く人のための深掘りシリーズ',
+  '神経系の階層': '脊髄から皮質まで、運動制御の全システムを縦断する',
+};
+
+const systemColors: Record<string, string> = {
+  '筋骨格系': '#7c6fff',
+  '神経系': '#4fc3f7',
+  '内分泌系': '#ffcd3c',
+  '免疫系': '#7cff9f',
+  '循環器系': '#ff6fa8',
+  '呼吸器系': '#ff9f40',
+  '消化器系': '#ce93d8',
+  '感覚器系': '#80cbc4',
+  '被覆系': '#bcaaa4',
+};
 ---
+<BaseLayout title="Human Body Project">
+  <!-- Hero -->
+  <section style="max-width:1100px;margin:0 auto;padding:5rem 1.5rem 3rem;">
+    <p style="color:var(--color-accent);font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem;">Human Body Project</p>
+    <h1 style="font-size:clamp(1.8rem,4vw,3rem);font-weight:800;line-height:1.2;margin-bottom:1.25rem;">
+      身体の解像度を上げる
+    </h1>
+    <p style="color:var(--color-text-muted);font-size:1.05rem;max-width:560px;line-height:1.8;">
+      「息が上がる」「筋肉痛になる」「眠くなる」——日常の感覚を起点に、<br>
+      L1（系）からL10（分子）まで縦断的に読む解剖学リファレンス。
+    </p>
+    <div style="display:flex;gap:0.75rem;margin-top:2rem;flex-wrap:wrap;">
+      <a href="/search" style="background:var(--color-accent);color:white;padding:0.6rem 1.4rem;border-radius:6px;text-decoration:none;font-size:0.9rem;font-weight:600;">
+        感覚から検索する
+      </a>
+      <a href="#docs" style="background:var(--color-surface);color:var(--color-text);padding:0.6rem 1.4rem;border-radius:6px;text-decoration:none;font-size:0.9rem;border:1px solid var(--color-border);">
+        全ドキュメント →
+      </a>
+    </div>
+  </section>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+  <!-- How to read -->
+  <section style="background:var(--color-surface);border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);">
+    <div style="max-width:1100px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;">
+      {[
+        { icon: '👁', label: '感覚から入る', desc: '「息が上がる」「手が震える」など体験から探す' },
+        { icon: '🔬', label: '分子まで降りる', desc: 'L1系→L10分子まで10段階で一貫して追える' },
+        { icon: '❓', label: '誤解を壊す', desc: '各テーマの「よくある誤解」を最初に解体する' },
+      ].map(item => (
+        <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+          <span style="font-size:1.4rem;line-height:1;">{item.icon}</span>
+          <div>
+            <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.25rem;">{item.label}</div>
+            <div style="color:var(--color-text-muted);font-size:0.8rem;">{item.desc}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Document list by series -->
+  <section id="docs" style="max-width:1100px;margin:0 auto;padding:3rem 1.5rem;">
+    {seriesOrder.map(series => (
+      <div style="margin-bottom:3.5rem;">
+        <div style="margin-bottom:1.5rem;">
+          <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.35rem;">{series}</h2>
+          <p style="color:var(--color-text-muted);font-size:0.85rem;">{seriesDesc[series]}</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:0.75rem;">
+          {(seriesGroups[series] ?? []).map(doc => (
+            <a
+              href={`/vertical/${doc.id}`}
+              style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:10px;padding:1.1rem 1.25rem;text-decoration:none;color:var(--color-text);display:block;"
+              onmouseover="this.style.borderColor='var(--color-accent)'"
+              onmouseout="this.style.borderColor='var(--color-border)'"
+            >
+              <div style="display:flex;align-items:baseline;gap:0.5rem;margin-bottom:0.5rem;">
+                <span style="font-size:0.7rem;color:var(--color-accent);font-weight:700;">
+                  {String(doc.data.number).padStart(2, '0')}
+                </span>
+                <span style="font-size:1rem;font-weight:700;">{doc.data.title}</span>
+              </div>
+              <p style="font-size:0.82rem;color:var(--color-text-muted);margin-bottom:0.75rem;">{doc.data.description}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+                {doc.data.systems.map((sys: string) => (
+                  <span style={`font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:20px;background:${systemColors[sys] ?? '#555'}22;color:${systemColors[sys] ?? '#aaa'};border:1px solid ${systemColors[sys] ?? '#555'}44;`}>
+                    {sys}
+                  </span>
+                ))}
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</BaseLayout>

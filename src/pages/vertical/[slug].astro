@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('vertical');
+  return docs.map(doc => ({ params: { slug: doc.id }, props: { doc } }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+
+const levels = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9', 'L10'];
+
+const systemColors: Record<string, string> = {
+  '筋骨格系': '#7c6fff',
+  '神経系': '#4fc3f7',
+  '内分泌系': '#ffcd3c',
+  '免疫系': '#7cff9f',
+  '循環器系': '#ff6fa8',
+  '呼吸器系': '#ff9f40',
+  '消化器系': '#ce93d8',
+  '感覚器系': '#80cbc4',
+  '被覆系': '#bcaaa4',
+};
+---
+<BaseLayout title={doc.data.title} description={doc.data.description}>
+  <div style="max-width:860px;margin:0 auto;padding:2.5rem 1.5rem;">
+
+    <!-- Breadcrumb -->
+    <nav style="font-size:0.8rem;color:var(--color-text-muted);margin-bottom:1.5rem;">
+      <a href="/" style="color:var(--color-text-muted);text-decoration:none;">ホーム</a>
+      <span style="margin:0 0.4rem;">›</span>
+      <span>{doc.data.series}</span>
+      <span style="margin:0 0.4rem;">›</span>
+      <span style="color:var(--color-text);">{doc.data.title}</span>
+    </nav>
+
+    <!-- Header -->
+    <header style="margin-bottom:2rem;">
+      <div style="display:flex;align-items:baseline;gap:0.6rem;margin-bottom:0.5rem;">
+        <span style="color:var(--color-accent);font-size:0.75rem;font-weight:700;">
+          {String(doc.data.number).padStart(2, '0')}
+        </span>
+        <h1 style="font-size:1.75rem;font-weight:800;line-height:1.2;">{doc.data.title}</h1>
+      </div>
+      <p style="color:var(--color-text-muted);font-size:0.95rem;margin-bottom:1rem;">{doc.data.description}</p>
+
+      <!-- System tags -->
+      <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:1rem;">
+        {doc.data.systems.map((sys: string) => (
+          <span style={`font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:20px;background:${systemColors[sys] ?? '#555'}22;color:${systemColors[sys] ?? '#aaa'};border:1px solid ${systemColors[sys] ?? '#555'}44;`}>
+            {sys}
+          </span>
+        ))}
+      </div>
+
+      <!-- Molecule tags -->
+      <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+        {doc.data.molecules.map((mol: string) => (
+          <span style="font-size:0.72rem;padding:0.15rem 0.5rem;border-radius:4px;background:rgba(170,255,200,0.08);color:#aaffcc;border:1px solid rgba(170,255,200,0.2);font-family:monospace;">
+            {mol}
+          </span>
+        ))}
+      </div>
+    </header>
+
+    <!-- Level Filter -->
+    <div id="level-filter" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:10px;padding:0.85rem 1rem;margin-bottom:2rem;position:sticky;top:64px;z-index:40;">
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <span style="font-size:0.75rem;color:var(--color-text-muted);font-weight:600;white-space:nowrap;">Lレベルフィルター</span>
+        <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+          <button
+            onclick="setFilter('all')"
+            id="btn-all"
+            style="font-size:0.72rem;padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--color-accent);background:var(--color-accent);color:white;cursor:pointer;"
+          >すべて</button>
+          {levels.map(l => (
+            <button
+              onclick={`setFilter('${l}')`}
+              id={`btn-${l}`}
+              style="font-size:0.72rem;padding:0.2rem 0.5rem;border-radius:4px;border:1px solid var(--color-border);background:transparent;color:var(--color-text-muted);cursor:pointer;"
+            >{l}</button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <article class="prose" id="doc-content">
+      <Content />
+    </article>
+
+    <!-- Navigation -->
+    <nav style="display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--color-border);font-size:0.875rem;">
+      {doc.data.number > 1
+        ? <a href={`/vertical/${String(doc.data.number - 1).padStart(2, '0')}`} style="color:var(--color-accent);text-decoration:none;">← 前のドキュメント</a>
+        : <span />
+      }
+      {doc.data.number < 18
+        ? <a href={`/vertical/${String(doc.data.number + 1).padStart(2, '0')}`} style="color:var(--color-accent);text-decoration:none;">次のドキュメント →</a>
+        : <span />
+      }
+    </nav>
+  </div>
+</BaseLayout>
+
+<script>
+  const LEVEL_HEADERS = ['### L1', '### L2', '### L3', '### L4', '### L5', '### L6', '### L7', '### L8', '### L9', '### L10'];
+
+  function setFilter(level: string) {
+    const content = document.getElementById('doc-content');
+    if (!content) return;
+
+    // Reset all buttons
+    const btnAll = document.getElementById('btn-all') as HTMLButtonElement;
+    document.querySelectorAll('#level-filter button').forEach(btn => {
+      (btn as HTMLButtonElement).style.background = 'transparent';
+      (btn as HTMLButtonElement).style.color = 'var(--color-text-muted)';
+      (btn as HTMLButtonElement).style.borderColor = 'var(--color-border)';
+    });
+
+    if (level === 'all') {
+      btnAll.style.background = 'var(--color-accent)';
+      btnAll.style.color = 'white';
+      btnAll.style.borderColor = 'var(--color-accent)';
+      // Show all h3 sections
+      content.querySelectorAll('h3').forEach(h => {
+        let el = h.nextElementSibling;
+        h.style.display = '';
+        while (el && el.tagName !== 'H3' && el.tagName !== 'H2' && el.tagName !== 'H1') {
+          (el as HTMLElement).style.display = '';
+          el = el.nextElementSibling;
+        }
+      });
+      return;
+    }
+
+    const activeBtn = document.getElementById(`btn-${level}`) as HTMLButtonElement;
+    if (activeBtn) {
+      activeBtn.style.background = 'var(--color-accent)';
+      activeBtn.style.color = 'white';
+      activeBtn.style.borderColor = 'var(--color-accent)';
+    }
+
+    // Show only the selected level's h3 section
+    const h3s = content.querySelectorAll('h3');
+    h3s.forEach(h => {
+      const text = h.textContent ?? '';
+      const isTarget = text.includes(`：${level}`) || text.startsWith(level);
+      let el = h.nextElementSibling;
+      if (isTarget) {
+        h.style.display = '';
+        while (el && el.tagName !== 'H3' && el.tagName !== 'H2' && el.tagName !== 'H1') {
+          (el as HTMLElement).style.display = '';
+          el = el.nextElementSibling;
+        }
+      } else {
+        h.style.display = 'none';
+        while (el && el.tagName !== 'H3' && el.tagName !== 'H2' && el.tagName !== 'H1') {
+          (el as HTMLElement).style.display = 'none';
+          el = el.nextElementSibling;
+        }
+      }
+    });
+  }
+
+  // Expose to global scope for onclick handlers
+  (window as any).setFilter = setFilter;
+</script>

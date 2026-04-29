@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('vertical');
+docs.sort((a, b) => a.data.number - b.data.number);
+
+// Build search index for client-side Fuse.js
+const searchIndex = docs.map(doc => ({
+  slug: doc.id,
+  number: doc.data.number,
+  title: doc.data.title,
+  description: doc.data.description,
+  systems: doc.data.systems.join(' '),
+  molecules: doc.data.molecules.join(' '),
+  sensationTags: doc.data.sensationTags.join(' '),
+  series: doc.data.series,
+}));
+---
+<BaseLayout title="検索" description="感覚・分子・症状からドキュメントを探す">
+  <div style="max-width:760px;margin:0 auto;padding:3rem 1.5rem;">
+    <h1 style="font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;">感覚から探す</h1>
+    <p style="color:var(--color-text-muted);font-size:0.9rem;margin-bottom:2rem;">
+      「息が上がる」「眠い」「PIEZO2」など、感覚・症状・分子名で検索できます。
+    </p>
+
+    <!-- Search input -->
+    <div style="position:relative;margin-bottom:2rem;">
+      <input
+        id="search-input"
+        type="text"
+        placeholder="例：息が上がる、筋肉痛、mTOR、バランス..."
+        autofocus
+        style="width:100%;padding:0.85rem 1rem 0.85rem 3rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:10px;color:var(--color-text);font-size:1rem;outline:none;box-sizing:border-box;"
+        onfocus="this.style.borderColor='var(--color-accent)'"
+        onblur="this.style.borderColor='var(--color-border)'"
+      />
+      <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--color-text-muted);">🔍</span>
+    </div>
+
+    <!-- Results -->
+    <div id="search-results"></div>
+
+    <!-- All docs (shown when no query) -->
+    <div id="all-docs">
+      <p style="font-size:0.8rem;color:var(--color-text-muted);margin-bottom:1rem;">全{docs.length}ドキュメント</p>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        {docs.map(doc => (
+          <a href={`/vertical/${doc.id}`}
+            style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:8px;text-decoration:none;color:var(--color-text);"
+            onmouseover="this.style.borderColor='var(--color-accent)'"
+            onmouseout="this.style.borderColor='var(--color-border)'"
+          >
+            <span style="font-size:0.7rem;color:var(--color-accent);font-weight:700;min-width:24px;">
+              {String(doc.data.number).padStart(2, '0')}
+            </span>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:600;font-size:0.9rem;">{doc.data.title}</div>
+              <div style="font-size:0.78rem;color:var(--color-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                {doc.data.sensationTags.slice(0, 4).join(' · ')}
+              </div>
+            </div>
+            <span style="font-size:0.75rem;color:var(--color-text-muted);white-space:nowrap;">{doc.data.series}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ searchIndex }}>
+  import Fuse from 'fuse.js';
+
+  const fuse = new Fuse(searchIndex, {
+    keys: [
+      { name: 'title', weight: 3 },
+      { name: 'sensationTags', weight: 2.5 },
+      { name: 'molecules', weight: 2 },
+      { name: 'description', weight: 1.5 },
+      { name: 'systems', weight: 1 },
+    ],
+    threshold: 0.4,
+    includeScore: true,
+  });
+
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+  const allDocs = document.getElementById('all-docs');
+
+  function renderResults(items) {
+    if (items.length === 0) {
+      results.innerHTML = '<p style="color:var(--color-text-muted);font-size:0.9rem;">該当するドキュメントが見つかりません。</p>';
+      return;
+    }
+    results.innerHTML = `
+      <p style="font-size:0.8rem;color:var(--color-text-muted);margin-bottom:1rem;">${items.length}件見つかりました</p>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        ${items.map(({ item }) => `
+          <a href="/vertical/${item.slug}"
+            style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:8px;text-decoration:none;color:var(--color-text);"
+            onmouseover="this.style.borderColor='var(--color-accent)'"
+            onmouseout="this.style.borderColor='var(--color-border)'"
+          >
+            <span style="font-size:0.7rem;color:var(--color-accent);font-weight:700;min-width:24px;">
+              ${String(item.number).padStart(2, '0')}
+            </span>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:600;font-size:0.9rem;">${item.title}</div>
+              <div style="font-size:0.78rem;color:var(--color-text-muted);">${item.description}</div>
+            </div>
+            <span style="font-size:0.75rem;color:var(--color-text-muted);white-space:nowrap;">${item.series}</span>
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    if (!q) {
+      results.innerHTML = '';
+      allDocs.style.display = '';
+      return;
+    }
+    allDocs.style.display = 'none';
+    const hits = fuse.search(q);
+    renderResults(hits);
+  });
+</script>
