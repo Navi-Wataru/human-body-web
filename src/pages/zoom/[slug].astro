@@ -28,6 +28,51 @@ const LEVEL_LABELS: Record<number, string> = {
   10: '分子・遺伝子',
 };
 
+// 各レベルに共通する語彙の目印
+// 「自分がよく使う言葉がどの層にあるか」に気づくための座標軸
+const LEVEL_VOCAB: Record<number, { anchor: string[]; practitioner: string[] }> = {
+  1: {
+    anchor: ['筋骨格系', '神経系', '内分泌系', '循環器系', '免疫系', '呼吸器系'],
+    practitioner: ['体全体で', '身体が応答する', '連動性', '全身反応'],
+  },
+  2: {
+    anchor: ['骨格系', '筋系', '中枢神経系', '末梢神経系', '交感神経系', '体性感覚系'],
+    practitioner: ['自律神経', '運動系', '感覚系', '内分泌'],
+  },
+  3: {
+    anchor: ['骨格筋', '腱', '関節包', '脊髄', '小脳', '海馬', '視床下部'],
+    practitioner: ['ハムストリング', '膝関節', '肩甲骨', '脳'],
+  },
+  4: {
+    anchor: ['有頭骨', '腱鞘', 'TFCC', '扁桃体核', '海馬CA1', '脊髄灰白質'],
+    practitioner: ['靱帯', '半月板', '椎間板', '神経核'],
+  },
+  5: {
+    anchor: ['骨格筋組織', '結合組織', '軟骨組織', 'GABAニューロン群', '骨組織'],
+    practitioner: ['筋組織', '神経組織', '軟骨'],
+  },
+  6: {
+    anchor: ['サルコメア', '神経筋接合部', 'シナプス', 'ミエリン鞘', 'トライアド'],
+    practitioner: ['シナプス間隙', '筋節', 'ニューロン接合'],
+  },
+  7: {
+    anchor: ['筋線維', 'α運動ニューロン', '骨芽細胞', '破骨細胞', 'グリア細胞'],
+    practitioner: ['速筋線維', '遅筋線維', 'II型筋線維'],
+  },
+  8: {
+    anchor: ['ミトコンドリア', '筋小胞体', 'T管', '細胞核', 'リボソーム'],
+    practitioner: ['エネルギー産生器官', 'カルシウム貯蔵'],
+  },
+  9: {
+    anchor: ['RYR1', 'NMDA受容体', 'mTOR', 'カルシウムチャネル', 'AMPA受容体'],
+    practitioner: ['受容体', 'イオンチャネル', 'タンパク質複合体'],
+  },
+  10: {
+    anchor: ['ACTA1', 'MYH2', 'BDNF', 'ATP', 'Ca²⁺', 'mRNA'],
+    practitioner: ['タンパク質', 'ホルモン', '遺伝子発現'],
+  },
+};
+
 // L1(青紫)→L10(赤橙) の10色グラデーション
 const LEVEL_COLORS: Record<number, string> = {
   1:  '#7c6fff',
@@ -86,11 +131,21 @@ const levelsArray = Array.from({ length: 10 }, (_, i) => {
       <div style="overflow:hidden;position:relative;">
 
         <!-- Level label bar -->
-        <div id="level-label" style="padding:0.6rem 1.5rem;border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
-          <span id="level-badge" style="font-size:0.8rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:4px;border:1px solid;">L1</span>
-          <span id="level-name" style="font-size:0.9rem;font-weight:600;"></span>
-          <span id="level-title" style="font-size:0.8rem;color:var(--color-text-muted);"></span>
-          <span style="margin-left:auto;font-size:0.72rem;color:var(--color-text-muted);">↑↓ or scroll</span>
+        <div id="level-label" style="border-bottom:1px solid var(--color-border);flex-shrink:0;">
+          <!-- Level identity row -->
+          <div style="padding:0.55rem 1.5rem;display:flex;align-items:center;gap:0.75rem;">
+            <span id="level-badge" style="font-size:0.8rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:4px;border:1px solid;">L1</span>
+            <span id="level-name" style="font-size:0.9rem;font-weight:600;"></span>
+            <span id="level-title" style="font-size:0.8rem;color:var(--color-text-muted);"></span>
+            <span style="margin-left:auto;font-size:0.68rem;color:var(--color-text-muted);">↑↓ or scroll</span>
+          </div>
+          <!-- Vocabulary anchors -->
+          <div style="padding:0.4rem 1.5rem 0.55rem;display:flex;flex-wrap:wrap;gap:0.35rem;align-items:center;border-top:1px solid var(--color-border);">
+            <span style="font-size:0.6rem;color:var(--color-text-muted);font-weight:600;white-space:nowrap;margin-right:0.25rem;">語彙の目印</span>
+            <div id="vocab-anchor" style="display:flex;flex-wrap:wrap;gap:0.3rem;"></div>
+            <span style="font-size:0.6rem;color:var(--color-border);margin:0 0.25rem;">|</span>
+            <div id="vocab-practitioner" style="display:flex;flex-wrap:wrap;gap:0.3rem;"></div>
+          </div>
         </div>
 
         <!-- Scroll hint: zoom direction -->
@@ -139,7 +194,7 @@ const levelsArray = Array.from({ length: 10 }, (_, i) => {
 }
 </style>
 
-<script define:vars={{ levelsArray, LEVEL_COLORS, LEVEL_LABELS, docId: doc.id }}>
+<script define:vars={{ levelsArray, LEVEL_COLORS, LEVEL_LABELS, LEVEL_VOCAB, docId: doc.id }}>
   const STORAGE_KEY = `hbp-zoom-level-${docId}`;
   let currentLevel = parseInt(localStorage.getItem(STORAGE_KEY) ?? '1');
 
@@ -164,6 +219,17 @@ const levelsArray = Array.from({ length: 10 }, (_, i) => {
     document.getElementById('level-name').textContent = LEVEL_LABELS[currentLevel];
     const levelData = levelsArray[currentLevel - 1];
     document.getElementById('level-title').textContent = levelData?.title ?? '';
+
+    // Update vocabulary anchors
+    const vocab = LEVEL_VOCAB[currentLevel];
+    const anchorEl = document.getElementById('vocab-anchor');
+    const practEl = document.getElementById('vocab-practitioner');
+    anchorEl.innerHTML = vocab.anchor.map(w =>
+      `<span style="font-size:0.65rem;padding:0.1rem 0.45rem;border-radius:3px;background:${color}18;color:${color};border:1px solid ${color}44;font-family:monospace;">${w}</span>`
+    ).join('');
+    practEl.innerHTML = vocab.practitioner.map(w =>
+      `<span style="font-size:0.65rem;padding:0.1rem 0.45rem;border-radius:3px;background:rgba(136,136,170,0.1);color:var(--color-text-muted);border:1px solid var(--color-border);">${w}</span>`
+    ).join('');
 
     // Show/hide panels
     document.querySelectorAll('.level-panel').forEach(el => {
