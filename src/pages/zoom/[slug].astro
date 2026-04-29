@@ -1,0 +1,240 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+export function getStaticPaths() {
+  const levelsData = JSON.parse(
+    readFileSync(join(process.cwd(), 'src/data/levels.json'), 'utf-8')
+  );
+  return Object.keys(levelsData).map(id => ({
+    params: { slug: id },
+    props: { doc: levelsData[id] },
+  }));
+}
+
+const { doc } = Astro.props;
+
+const LEVEL_LABELS: Record<number, string> = {
+  1: '系',
+  2: 'サブシステム',
+  3: '器官',
+  4: '器官内構造',
+  5: '組織',
+  6: '微細構造',
+  7: '細胞',
+  8: '細胞内構造',
+  9: '分子機能単位',
+  10: '分子・遺伝子',
+};
+
+// L1(青紫)→L10(赤橙) の10色グラデーション
+const LEVEL_COLORS: Record<number, string> = {
+  1:  '#7c6fff',
+  2:  '#6b7fff',
+  3:  '#4fa8ff',
+  4:  '#38c9e8',
+  5:  '#2fd4b0',
+  6:  '#3dd68c',
+  7:  '#8fd44f',
+  8:  '#d4c43f',
+  9:  '#f09040',
+  10: '#f05050',
+};
+
+const levelsArray = Array.from({ length: 10 }, (_, i) => {
+  const key = `L${i + 1}`;
+  return doc.levels[key] ?? null;
+});
+---
+
+<BaseLayout title={`${doc.title} — ズーム`} description={doc.description}>
+  <div id="zoom-app" style="height:calc(100vh - 56px);display:flex;flex-direction:column;overflow:hidden;">
+
+    <!-- Header -->
+    <div style="background:var(--color-surface);border-bottom:1px solid var(--color-border);padding:0.6rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;">
+      <a href={`/vertical/${doc.id}`} style="color:var(--color-text-muted);font-size:0.8rem;text-decoration:none;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-text-muted)'">← テキスト表示</a>
+      <span style="color:var(--color-border);">|</span>
+      <span style="font-size:0.75rem;color:var(--color-accent);font-weight:700;">{String(doc.number).padStart(2, '0')}</span>
+      <span style="font-size:0.9rem;font-weight:700;">{doc.title}</span>
+      <span style="font-size:0.78rem;color:var(--color-text-muted);">{doc.description}</span>
+    </div>
+
+    <!-- Main layout -->
+    <div style="flex:1;display:grid;grid-template-columns:72px 1fr;overflow:hidden;">
+
+      <!-- Level scale bar -->
+      <div style="background:var(--color-surface);border-right:1px solid var(--color-border);display:flex;flex-direction:column;align-items:center;padding:1.5rem 0;gap:0;overflow:hidden;">
+        <div style="font-size:0.6rem;color:var(--color-text-muted);margin-bottom:0.75rem;letter-spacing:0.1em;">MACRO</div>
+        {levelsArray.map((level, i) => (
+          <button
+            class="level-btn"
+            data-level={i + 1}
+            title={`L${i+1}：${LEVEL_LABELS[i+1]}`}
+            style={`
+              width:36px;height:36px;border-radius:50%;border:2px solid ${LEVEL_COLORS[i+1]}44;
+              background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;
+              color:${LEVEL_COLORS[i+1]}88;font-size:0.65rem;font-weight:700;
+              transition:all 0.2s;flex-shrink:0;margin:2px 0;
+            `}
+          >L{i+1}</button>
+        ))}
+        <div style="font-size:0.6rem;color:var(--color-text-muted);margin-top:0.75rem;letter-spacing:0.1em;">MICRO</div>
+      </div>
+
+      <!-- Content area -->
+      <div style="overflow:hidden;position:relative;">
+
+        <!-- Level label bar -->
+        <div id="level-label" style="padding:0.6rem 1.5rem;border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+          <span id="level-badge" style="font-size:0.8rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:4px;border:1px solid;">L1</span>
+          <span id="level-name" style="font-size:0.9rem;font-weight:600;"></span>
+          <span id="level-title" style="font-size:0.8rem;color:var(--color-text-muted);"></span>
+          <span style="margin-left:auto;font-size:0.72rem;color:var(--color-text-muted);">↑↓ or scroll</span>
+        </div>
+
+        <!-- Scroll hint: zoom direction -->
+        <div style="position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;pointer-events:none;z-index:10;opacity:0.25;">
+          <span style="font-size:0.6rem;color:var(--color-text-muted);writing-mode:vertical-rl;letter-spacing:0.15em;">← L1（系）</span>
+          <div style="width:1px;height:60px;background:var(--color-border);"></div>
+          <span style="font-size:0.6rem;color:var(--color-text-muted);writing-mode:vertical-rl;letter-spacing:0.15em;">L10（分子）→</span>
+        </div>
+
+        <!-- Content panels -->
+        <div id="content-container" style="height:100%;overflow-y:auto;padding:1.5rem 2rem 4rem;position:relative;">
+          {levelsArray.map((level, i) => (
+            <div
+              class="level-panel"
+              data-level={i + 1}
+              style="display:none;animation:fadeIn 0.25s ease;"
+            >
+              {level
+                ? <article class="prose" set:html={level.html} />
+                : <p style="color:var(--color-text-muted);">このレベルのデータがありません。</p>
+              }
+            </div>
+          ))}
+        </div>
+
+        <!-- Bottom nav -->
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,var(--color-bg) 60%);padding:1rem 2rem 1rem;display:flex;justify-content:space-between;align-items:center;">
+          <button id="btn-prev" style="background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-text);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-size:0.82rem;">↑ ズームアウト</button>
+          <div id="progress-dots" style="display:flex;gap:4px;">
+            {levelsArray.map((_, i) => (
+              <div class="progress-dot" data-level={i+1} style="width:6px;height:6px;border-radius:50%;background:var(--color-border);cursor:pointer;transition:background 0.2s;"></div>
+            ))}
+          </div>
+          <button id="btn-next" style="background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-text);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-size:0.82rem;">↓ ズームイン</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+</style>
+
+<script define:vars={{ levelsArray, LEVEL_COLORS, LEVEL_LABELS, docId: doc.id }}>
+  const STORAGE_KEY = `hbp-zoom-level-${docId}`;
+  let currentLevel = parseInt(localStorage.getItem(STORAGE_KEY) ?? '1');
+
+  function goTo(level) {
+    if (level < 1 || level > 10) return;
+    currentLevel = level;
+    localStorage.setItem(STORAGE_KEY, String(level));
+    render();
+  }
+
+  function render() {
+    const color = LEVEL_COLORS[currentLevel];
+
+    // Update badge
+    const badge = document.getElementById('level-badge');
+    badge.textContent = `L${currentLevel}`;
+    badge.style.background = color + '22';
+    badge.style.color = color;
+    badge.style.borderColor = color + '66';
+
+    // Update label
+    document.getElementById('level-name').textContent = LEVEL_LABELS[currentLevel];
+    const levelData = levelsArray[currentLevel - 1];
+    document.getElementById('level-title').textContent = levelData?.title ?? '';
+
+    // Show/hide panels
+    document.querySelectorAll('.level-panel').forEach(el => {
+      el.style.display = parseInt(el.dataset.level) === currentLevel ? 'block' : 'none';
+    });
+
+    // Update scale bar buttons
+    document.querySelectorAll('.level-btn').forEach(btn => {
+      const l = parseInt(btn.dataset.level);
+      const c = LEVEL_COLORS[l];
+      if (l === currentLevel) {
+        btn.style.background = c + '33';
+        btn.style.borderColor = c;
+        btn.style.color = c;
+        btn.style.transform = 'scale(1.15)';
+      } else {
+        btn.style.background = 'transparent';
+        btn.style.borderColor = c + '44';
+        btn.style.color = c + '88';
+        btn.style.transform = 'scale(1)';
+      }
+    });
+
+    // Update progress dots
+    document.querySelectorAll('.progress-dot').forEach(dot => {
+      const l = parseInt(dot.dataset.level);
+      dot.style.background = l === currentLevel ? LEVEL_COLORS[l] : 'var(--color-border)';
+      dot.style.transform = l === currentLevel ? 'scale(1.4)' : 'scale(1)';
+    });
+
+    // Scroll to top of content
+    document.getElementById('content-container').scrollTop = 0;
+  }
+
+  // Button handlers
+  document.getElementById('btn-prev').addEventListener('click', () => goTo(currentLevel - 1));
+  document.getElementById('btn-next').addEventListener('click', () => goTo(currentLevel + 1));
+
+  // Scale bar clicks
+  document.querySelectorAll('.level-btn').forEach(btn => {
+    btn.addEventListener('click', () => goTo(parseInt(btn.dataset.level)));
+  });
+
+  // Progress dot clicks
+  document.querySelectorAll('.progress-dot').forEach(dot => {
+    dot.addEventListener('click', () => goTo(parseInt(dot.dataset.level)));
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); goTo(currentLevel + 1); }
+    if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  { e.preventDefault(); goTo(currentLevel - 1); }
+  });
+
+  // Scroll wheel (debounced)
+  let scrollCooldown = false;
+  document.getElementById('zoom-app').addEventListener('wheel', e => {
+    if (scrollCooldown) return;
+    const target = e.target.closest('#content-container');
+    if (target) {
+      const atBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 5;
+      const atTop    = target.scrollTop < 5;
+      if (e.deltaY > 0 && !atBottom) return;
+      if (e.deltaY < 0 && !atTop)    return;
+    }
+    e.preventDefault();
+    scrollCooldown = true;
+    setTimeout(() => { scrollCooldown = false; }, 600);
+    goTo(currentLevel + (e.deltaY > 0 ? 1 : -1));
+  }, { passive: false });
+
+  // Init
+  render();
+</script>

@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { marked } from 'marked';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const contentDir = join(__dirname, '../src/content/vertical');
@@ -58,7 +59,7 @@ function extractLevels(body) {
       .replace(/^---\n/, '')
       .trim();
 
-    levels[key] = { level: num, title, content };
+    levels[key] = { level: num, title, content, html: marked.parse(content) };
   }
   return levels;
 }
