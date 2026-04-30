@@ -69,9 +69,13 @@ const searchIndex = docs.map(doc => ({
 </BaseLayout>
 
 <script define:vars={{ searchIndex }}>
+  window.__searchIndex = searchIndex;
+</script>
+
+<script>
   import Fuse from 'fuse.js';
 
-  const fuse = new Fuse(searchIndex, {
+  const fuse = new Fuse((window as any).__searchIndex, {
     keys: [
       { name: 'title', weight: 3 },
       { name: 'sensationTags', weight: 2.5 },
@@ -83,11 +87,11 @@ const searchIndex = docs.map(doc => ({
     includeScore: true,
   });
 
-  const input = document.getElementById('search-input');
-  const results = document.getElementById('search-results');
-  const allDocs = document.getElementById('all-docs');
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const results = document.getElementById('search-results')!;
+  const allDocs = document.getElementById('all-docs')!;
 
-  function renderResults(items) {
+  function renderResults(items: any[]) {
     if (items.length === 0) {
       results.innerHTML = '<p style="color:var(--color-text-muted);font-size:0.9rem;">該当するドキュメントが見つかりません。</p>';
       return;
@@ -95,7 +99,7 @@ const searchIndex = docs.map(doc => ({
     results.innerHTML = `
       <p style="font-size:0.8rem;color:var(--color-text-muted);margin-bottom:1rem;">${items.length}件見つかりました</p>
       <div style="display:flex;flex-direction:column;gap:0.5rem;">
-        ${items.map(({ item }) => `
+        ${items.map(({ item }: any) => `
           <a href="/vertical/${item.slug}"
             style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:8px;text-decoration:none;color:var(--color-text);"
             onmouseover="this.style.borderColor='var(--color-accent)'"
