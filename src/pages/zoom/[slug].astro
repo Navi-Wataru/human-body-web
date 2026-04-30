@@ -7,13 +7,16 @@ export function getStaticPaths() {
   const levelsData = JSON.parse(
     readFileSync(join(process.cwd(), 'src/data/levels.json'), 'utf-8')
   );
+  const allDocs = Object.values(levelsData).map((d: any) => ({
+    id: d.id, number: d.number, title: d.title, description: d.description, series: d.series,
+  }));
   return Object.keys(levelsData).map(id => ({
     params: { slug: id },
-    props: { doc: levelsData[id] },
+    props: { doc: levelsData[id], allDocs },
   }));
 }
 
-const { doc } = Astro.props;
+const { doc, allDocs } = Astro.props;
 
 const LEVEL_LABELS: Record<number, string> = {
   1: '系',
@@ -96,13 +99,42 @@ const levelsArray = Array.from({ length: 10 }, (_, i) => {
 <BaseLayout title={`${doc.title} — ズーム`} description={doc.description}>
   <div id="zoom-app" style="height:calc(100vh - 56px);display:flex;flex-direction:column;overflow:hidden;">
 
-    <!-- Header -->
-    <div style="background:var(--color-surface);border-bottom:1px solid var(--color-border);padding:0.6rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;">
-      <a href={`/vertical/${doc.id}`} style="color:var(--color-text-muted);font-size:0.8rem;text-decoration:none;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-text-muted)'">← テキスト表示</a>
-      <span style="color:var(--color-border);">|</span>
-      <span style="font-size:0.75rem;color:var(--color-accent);font-weight:700;">{String(doc.number).padStart(2, '0')}</span>
-      <span style="font-size:0.9rem;font-weight:700;">{doc.title}</span>
-      <span style="font-size:0.78rem;color:var(--color-text-muted);">{doc.description}</span>
+    <!-- Header: 2軸座標 -->
+    <div style="background:var(--color-surface);border-bottom:1px solid var(--color-border);flex-shrink:0;">
+      <!-- 座標バー -->
+      <div style="padding:0.5rem 1.5rem;display:flex;align-items:center;gap:1rem;">
+        <a href="/" style="color:var(--color-text-muted);font-size:0.75rem;text-decoration:none;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-text-muted)'">←</a>
+        <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;">
+          <span style="color:var(--color-text-muted);">X</span>
+          <span style="color:var(--color-accent);font-weight:700;">{String(doc.number).padStart(2,'0')}</span>
+          <span style="font-weight:600;">{doc.title}</span>
+          <span style="color:var(--color-text-muted);">—</span>
+          <span style="color:var(--color-text-muted);">{doc.description}</span>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;">
+          <span style="color:var(--color-text-muted);">Y</span>
+          <span id="coord-y" style="font-weight:700;">L1</span>
+          <span id="coord-label" style="color:var(--color-text-muted);"></span>
+        </div>
+        <a href={`/vertical/${doc.id}`} style="font-size:0.72rem;color:var(--color-text-muted);text-decoration:none;border:1px solid var(--color-border);padding:0.15rem 0.5rem;border-radius:4px;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-text-muted)'">テキスト</a>
+      </div>
+      <!-- X軸ナビ：トピック一覧 -->
+      <div style="overflow-x:auto;padding:0.4rem 1.5rem;display:flex;gap:0.3rem;border-top:1px solid var(--color-border);">
+        {allDocs.map((d: any) => (
+          <a
+            id={`topic-${d.id}`}
+            href={`/zoom/${d.id}`}
+            title={d.title}
+            style={`font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:4px;text-decoration:none;white-space:nowrap;flex-shrink:0;border:1px solid;
+              ${d.id === doc.id
+                ? 'background:var(--color-accent);color:white;border-color:var(--color-accent);'
+                : 'background:transparent;color:var(--color-text-muted);border-color:var(--color-border);'
+              }`}
+            onmouseover={d.id !== doc.id ? "this.style.borderColor='var(--color-accent)';this.style.color='var(--color-text)'" : ''}
+            onmouseout={d.id !== doc.id ? "this.style.borderColor='var(--color-border)';this.style.color='var(--color-text-muted)'" : ''}
+          >{String(d.number).padStart(2,'0')} {d.title}</a>
+        ))}
+      </div>
     </div>
 
     <!-- Main layout -->
@@ -219,6 +251,10 @@ const levelsArray = Array.from({ length: 10 }, (_, i) => {
     document.getElementById('level-name').textContent = LEVEL_LABELS[currentLevel];
     const levelData = levelsArray[currentLevel - 1];
     document.getElementById('level-title').textContent = levelData?.title ?? '';
+
+    // Update Y-axis coordinate in header
+    document.getElementById('coord-y').textContent = `L${currentLevel}`;
+    document.getElementById('coord-label').textContent = LEVEL_LABELS[currentLevel];
 
     // Update vocabulary anchors
     const vocab = LEVEL_VOCAB[currentLevel];
