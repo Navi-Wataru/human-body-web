@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('vertical');
+docs.sort((a, b) => a.data.number - b.data.number);
+
+// Parse L10 table from markdown body to extract molecule descriptions
+function parseL10Descriptions(body: string): Record<string, { site: string; func: string }> {
+  const result: Record<string, { site: string; func: string }> = {};
+  const l10Match = body.match(/##\s*L10[^\n]*\n([\s\S]*?)(?:\n##\s|$)/);
+  if (!l10Match) return result;
+  const tableRows = l10Match[1].matchAll(/^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|/gm);
+  for (const row of tableRows) {
+    const name = row[1].trim();
+    if (name === '分子/遺伝子' || name === '---' || name.startsWith('-')) continue;
+    result[name] = { site: row[2].trim(), func: row[3].trim() };
+  }
+  return result;
+}
+
+// Build molecule index: name -> { docs, descriptions }
+type MolEntry = {
+  docs: Array<{ id: string; number: number; title: string; series: string }>;
+  descriptions: Array<{ docTitle: string; site: string; func: string }>;
+};
+
+const moleculeMap = new Map<string, MolEntry>();
+
+for (const doc of docs) {
+  const descMap = parseL10Descriptions(doc.body ?? '');
+  for (const mol of doc.data.molecules) {
+    if (!moleculeMap.has(mol)) {
+      moleculeMap.set(mol, { docs: [], descriptions: [] });
+    }
+    const entry = moleculeMap.get(mol)!;
+    entry.docs.push({ id: doc.id, number: doc.data.number, title: doc.data.title, series: doc.data.series ?? '' });
+    const desc = descMap[mol];
+    if (desc) {
+      entry.descriptions.push({ docTitle: doc.data.title, ...desc });
+    }
+  }
+}
+
+// Sort alphabetically
+const molecules = [...moleculeMap.entries()].sort(([a], [b]) => a.localeCompare(b));
+
+// Stats
+const crossCutting = molecules.filter(([, e]) => e.docs.length >= 2).length;
+---
+<BaseLayout title="分子インデックス" description="全ドキュメントに登場する分子・遺伝子の横断インデックス">
+  <div style="max-width:1000px;margin:0 auto;padding:3rem 1.5rem;">
+    <p style="color:var(--color-accent);font-size:0.8rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem;">Molecule Index</p>
+    <h1 style="font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;">分子インデックス</h1>
+    <p style="color:var(--color-text-muted);font-size:0.88rem;margin-bottom:0.5rem;">
+      全ドキュメントに登場する分子・遺伝子 {molecules.length} 種。複数ドキュメントにまたがる分子は <span style="color:var(--color-accent);font-weight:600;">{crossCutting}種</span>。
+    </p>
+    <p style="color:var(--color-text-muted);font-size:0.8rem;margin-bottom:2rem;">
+      分子名・機能・発現部位でフィルタリングできます。
+    </p>
+
+    <!-- Filter input -->
+    <div style="position:relative;margin-bottom:1.5rem;">
+      <input
+        id="mol-filter"
+        type="text"
+        placeholder="例：TRPV1、チャネル、筋肉..."
+        autofocus
+        style="width:100%;padding:0.75rem 1rem 0.75rem 2.8rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:10px;color:var(--color-text);font-size:0.95rem;outline:none;box-sizing:border-box;"
+        onfocus="this.style.borderColor='var(--color-accent)'"
+        onblur="this.style.borderColor='var(--color-border)'"
+      />
+      <span style="position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);color:var(--color-text-muted);font-size:0.9rem;">🔬</span>
+    </div>
+
+    <!-- Count display -->
+    <p id="mol-count" style="font-size:0.78rem;color:var(--color-text-muted);margin-bottom:1.25rem;">{molecules.length}種を表示中</p>
+
+    <!-- Molecule list -->
+    <div id="mol-list" style="display:flex;flex-direction:column;gap:0.6rem;">
+      {molecules.map(([name, entry]) => (
+        <div
+          class="mol-item"
+          data-name={name.toLowerCase()}
+          data-func={entry.descriptions.map(d => d.func).join(' ').toLowerCase()}
+          data-site={entry.descriptions.map(d => d.site).join(' ').toLowerCase()}
+          style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:10px;padding:0.9rem 1.1rem;"
+        >
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;flex-wrap:wrap;">
+            <!-- Molecule name -->
+            <div style="min-width:120px;flex-shrink:0;">
+              <span style="font-family:monospace;font-size:0.95rem;font-weight:700;color:var(--color-accent);">{name}</span>
+              {entry.docs.length >= 2 && (
+                <span style="margin-left:0.4rem;font-size:0.65rem;padding:0.1rem 0.4rem;background:rgba(124,111,255,0.15);color:var(--color-accent);border-radius:10px;border:1px solid rgba(124,111,255,0.3);">×{entry.docs.length}</span>
+              )}
+            </div>
+
+            <!-- Best description -->
+            <div style="flex:1;min-width:200px;">
+              {entry.descriptions.length > 0 ? (
+                <p style="font-size:0.8rem;color:var(--color-text-muted);margin:0;line-height:1.6;">
+                  {entry.descriptions[0].func.length > 120
+                    ? entry.descriptions[0].func.slice(0, 120) + '…'
+                    : entry.descriptions[0].func}
+                </p>
+              ) : (
+                <p style="font-size:0.8rem;color:var(--color-text-muted);margin:0;opacity:0.5;">—</p>
+              )}
+            </div>
+          </div>
+
+          <!-- Doc badges -->
+          <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.65rem;">
+            {entry.docs.map(doc => (
+              <a
+                href={`/vertical/${doc.id}`}
+                style="font-size:0.72rem;padding:0.2rem 0.6rem;background:var(--color-bg);border:1px solid var(--color-border);border-radius:6px;text-decoration:none;color:var(--color-text);white-space:nowrap;"
+                onmouseover="this.style.borderColor='var(--color-accent)';this.style.color='var(--color-accent)'"
+                onmouseout="this.style.borderColor='var(--color-border)';this.style.color='var(--color-text)'"
+              >
+                <span style="color:var(--color-accent);font-weight:700;">{String(doc.number).padStart(2,'0')}</span>
+                {' '}{doc.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const input = document.getElementById('mol-filter') as HTMLInputElement;
+  const countEl = document.getElementById('mol-count')!;
+  const items = document.querySelectorAll<HTMLElement>('.mol-item');
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let visible = 0;
+    items.forEach(item => {
+      const match = !q
+        || item.dataset.name!.includes(q)
+        || item.dataset.func!.includes(q)
+        || item.dataset.site!.includes(q);
+      item.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    countEl.textContent = q ? `${visible}種がヒット` : `${items.length}種を表示中`;
+  });
+</script>
