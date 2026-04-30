@@ -12,12 +12,12 @@ for (const doc of docs) {
   seriesGroups[s].push(doc);
 }
 
-const seriesOrder = ['日常の体験', '実践者向け', '内臓感覚', '神経系の階層'];
+const seriesOrder = ['実践者向け', '内臓感覚', '神経系の階層', '日常の体験'];
 const seriesDesc: Record<string, string> = {
-  '日常の体験': '息切れ・空腹・眠気など、誰もが経験する感覚から人体を読む',
-  '実践者向け': 'ボディワーカー・トレーナー・動く人のための深掘りシリーズ',
-  '内臓感覚': '腸・心臓・迷走神経——体の内側からのシグナルを分子まで追う',
-  '神経系の階層': '脊髄から皮質まで、運動制御の全システムを縦断する',
+  '実践者向け': '可動域・有酸素適応・触覚・呼吸——動く・鍛える・回復するための構造を読む',
+  '内臓感覚': '迷走神経・腸管神経・内受容——パフォーマンスと回復を支える体内シグナルの仕組み',
+  '神経系の階層': '脊髄から皮質まで、運動制御の全レイヤーを分子レベルで縦断する',
+  '日常の体験': '息切れ・疲労・渇き——トレーニング中に起きる体の現象の正体',
 };
 
 const systemColors: Record<string, string> = {
@@ -37,16 +37,20 @@ const systemColors: Record<string, string> = {
   <section style="max-width:1100px;margin:0 auto;padding:5rem 1.5rem 3rem;">
     <p style="color:var(--color-accent);font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem;">Human Body Project</p>
     <h1 style="font-size:clamp(1.8rem,4vw,3rem);font-weight:800;line-height:1.2;margin-bottom:1.25rem;">
-      感じる身体と、知る身体をつなぐ
+      動く・鍛える・回復する<br>
+      <span style="color:var(--color-accent);">その仕組みを、分子まで読む</span>
     </h1>
-    <p style="color:var(--color-text-muted);font-size:1.05rem;max-width:560px;line-height:1.8;">
-      「息が上がる」「スナップを使う」——内側の体験（UL）を起点に、<br>
-      L1（系）からL10（分子）まで、外側の構造（UR）へ降りていく。<br>
-      <span style="font-size:0.9rem;opacity:0.7;">自分が今どの深さで語っているかへの気づきを、身体を通じて得るための地図。</span>
+    <p style="color:var(--color-text-muted);font-size:1.05rem;max-width:580px;line-height:1.8;">
+      「息が上がる」「関節が固まる」「迷走神経で落ち着く」——<br>
+      体の現象を感覚から入り、L1（系）からL10（分子）まで一本の線で追う。<br>
+      <span style="font-size:0.9rem;opacity:0.7;">ボディワーカー・トレーナー・動く人のための構造的身体地図。</span>
     </p>
     <div style="display:flex;gap:0.75rem;margin-top:2rem;flex-wrap:wrap;">
       <a href="/search" style="background:var(--color-accent);color:white;padding:0.6rem 1.4rem;border-radius:6px;text-decoration:none;font-size:0.9rem;font-weight:600;">
         感覚から検索する
+      </a>
+      <a href="/molecules" style="background:var(--color-surface);color:var(--color-text);padding:0.6rem 1.4rem;border-radius:6px;text-decoration:none;font-size:0.9rem;border:1px solid var(--color-border);">
+        分子インデックス →
       </a>
       <a href="#docs" style="background:var(--color-surface);color:var(--color-text);padding:0.6rem 1.4rem;border-radius:6px;text-decoration:none;font-size:0.9rem;border:1px solid var(--color-border);">
         全ドキュメント →
@@ -58,9 +62,9 @@ const systemColors: Record<string, string> = {
   <section style="background:var(--color-surface);border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);">
     <div style="max-width:1100px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;">
       {[
-        { icon: '👁', label: '感覚から入る', desc: '「息が上がる」「手が震える」など体験から探す' },
-        { icon: '🔬', label: '分子まで降りる', desc: 'L1系→L10分子まで10段階で一貫して追える' },
-        { icon: '❓', label: '誤解を壊す', desc: '各テーマの「よくある誤解」を最初に解体する' },
+        { icon: '🏃', label: '動く現象から入る', desc: '「息が上がる」「筋肉が張る」「力が抜ける」など実感から探す' },
+        { icon: '🔬', label: '分子まで降りる', desc: 'L1（系）→L10（分子）まで10段階で一本線に追える' },
+        { icon: '🔗', label: '横断で繋がる', desc: 'TRPV1・PIEZO2など同じ分子が複数テーマにまたがる構造を見る' },
       ].map(item => (
         <div style="display:flex;gap:0.75rem;align-items:flex-start;">
           <span style="font-size:1.4rem;line-height:1;">{item.icon}</span>
