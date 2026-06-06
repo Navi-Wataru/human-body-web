@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/od",
+      "permanent": false,
+      "has": [{ "type": "host", "value": "od.navigatejpn.com" }]
+    }
+  ]
+}

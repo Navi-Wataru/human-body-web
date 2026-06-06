@@ -1,0 +1,28 @@
+---
+import ODLayout from "../layouts/ODLayout.astro";
+import SecDepth from "../components/od/SecDepth.astro";
+---
+<ODLayout
+  title="二つの現場から — Body OD"
+  description="トレーニングと組織開発、二つの現場で同じことが起きている。"
+>
+  <main>
+    <div class="mx-auto max-w-shell px-gutter pt-10">
+      <a
+        href="/od"
+        class="font-sans text-micro font-light text-ink-muted no-underline hover:text-ink"
+      >← 戻る</a>
+    </div>
+    <SecDepth />
+    <div class="mx-auto max-w-measure px-gutter pb-[120px] pt-[clamp(80px,12vh,120px)]">
+      <hr class="border-0 border-t border-line" />
+      <p class="mt-8 font-sans text-small font-light text-ink-muted">
+        お問い合わせ —
+        <a
+          href="mailto:official@navigatejpn.com"
+          class="border-b border-line-ink pb-px text-ink no-underline hover:border-seal hover:text-seal"
+        >official@navigatejpn.com</a>
+      </p>
+    </div>
+  </main>
+</ODLayout>

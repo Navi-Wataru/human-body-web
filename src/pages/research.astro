@@ -1,0 +1,1043 @@
+---
+import { leadershipClusters, odClusters } from "../data/researchPapers";
+
+const allClusters = [...leadershipClusters, ...odClusters];
+
+function getId(paper: any): string {
+  const lastName = paper.author.split(',')[0].toLowerCase().replace(/[^a-z]/g, '');
+  return `${lastName}_${paper.year}`;
+}
+
+const jaKeywords: Record<string, string> = {
+  hamill_2013:         '身体的リーダー論',
+  fisher_2015:         '身体的な実践',
+  ladkin_2010:         '真正性と身体',
+  ladkin_2008:         '美しくリードする',
+  ladkin_2013:         '感じられる経験',
+  karssiens_2014:      '身体知と余白',
+  bathurst_2013:       'ジェスチャーの美',
+  szelwach_2023:       '全人的な育成',
+  rigg_2018:           '身体的省察',
+  brendel_2016:        '身体とマインドフル',
+  springborg_2010:     '感覚と芸術',
+  bigo_2022:           'ヨガと学習',
+  schuyler_2010:       '誠実性の訓練',
+  hansen_2007:         '美的リーダー',
+  ropo_2019:           '空間とリード',
+  ropo_2013:           '場所と身体',
+  ford_2017:           '物質的プレゼンス',
+  raelin_2005:         '集合的リーダー',
+  raelin_2016:         '実践としてのリーダー',
+  lord_2011:           '象徴・接続・身体知',
+  harquail_2010:       '身体化した組織認識',
+  styhre_2004:         '組織の再身体化',
+  wright_2019:         '身体的ルーティン',
+  lockwoodharris_2023: '組織的身体操作',
+  kupers_2011:         '現象学と組織',
+  edmondson_1999:      '心理的安全性',
+  heaphy_2008:         '身体と社会的交流',
+  gordon_2020:         '生理的同期',
+  reinero_2021:        '脳間同期',
+  bushe_2009:          'ODの対話的転換',
+  kenward_2018:        'OD身体実践',
+  hanold_2017:         '対話的真正性',
+  haines_2019:         'トラウマと癒し',
+  scharmer_2009:       'U理論',
+  creary_2022:         '過労と回復',
+  porges_2022:         'ポリヴェーガル理論',
+  kirrane_2025:        '神経系とリーダー',
+  crossan_1999:        '組織学習の枠組み',
+  nonaka_1998:         '「場」の概念',
+  tsoukas_2003:        '暗黙知への問い',
+  wenger_1998:         '実践コミュニティ',
+};
+
+const clusterColorMap: Record<string, string> = {
+  core:       '#9e4630',
+  somatic:    '#8a7060',
+  aesthetics: '#b06878',
+  leaderful:  '#5a7870',
+  theory:     '#607890',
+  team:       '#507878',
+  somaticOD:  '#9a7848',
+  neuro:      '#807060',
+  learning:   '#708060',
+};
+
+const nodes = allClusters.flatMap(cluster =>
+  cluster.papers.map((paper: any) => ({
+    id:           getId(paper),
+    authorShort:  paper.author.split(',')[0],
+    author:       paper.author,
+    year:         paper.year,
+    title:        paper.title,
+    journal:      paper.journal,
+    abstract:     paper.abstract,
+    practice:     paper.intervention?.practice ?? '',
+    study:        paper.intervention?.study ?? '',
+    cluster:      cluster.key,
+    clusterLabel: cluster.label,
+    citations:    paper.citations ?? null,
+    isBook:       paper.isBook ?? false,
+    color:        clusterColorMap[cluster.key] ?? '#888',
+    iconPath:     cluster.iconPath,
+    keyword:      jaKeywords[getId(paper)] ?? '',
+  }))
+);
+
+// Within-cluster: all-to-all
+const edges: any[] = [];
+allClusters.forEach(cluster => {
+  const papers = nodes.filter(n => n.cluster === cluster.key);
+  for (let i = 0; i < papers.length; i++) {
+    for (let j = i + 1; j < papers.length; j++) {
+      edges.push({ source: papers[i].id, target: papers[j].id, edgeType: 'cluster', theme: cluster.key });
+    }
+  }
+});
+
+// Thematic cross-cluster edges
+const thematic = [
+  { source: 'edmondson_1999', target: 'porges_2022',   theme: '場の安全' },
+  { source: 'edmondson_1999', target: 'kirrane_2025',  theme: '場の安全' },
+  { source: 'porges_2022',    target: 'kirrane_2025',  theme: '場の安全' },
+  { source: 'porges_2022',    target: 'kenward_2018',  theme: '場の安全' },
+  { source: 'edmondson_1999', target: 'kenward_2018',  theme: '場の安全' },
+  { source: 'ladkin_2010',    target: 'hanold_2017',   theme: '真正性' },
+  { source: 'ladkin_2010',    target: 'schuyler_2010', theme: '真正性' },
+  { source: 'hanold_2017',    target: 'schuyler_2010', theme: '真正性' },
+  { source: 'porges_2022',    target: 'heaphy_2008',   theme: '神経・生理' },
+  { source: 'porges_2022',    target: 'gordon_2020',   theme: '神経・生理' },
+  { source: 'kirrane_2025',   target: 'heaphy_2008',   theme: '神経・生理' },
+  { source: 'heaphy_2008',    target: 'gordon_2020',   theme: '神経・生理' },
+  { source: 'gordon_2020',    target: 'reinero_2021',  theme: '神経・生理' },
+  { source: 'scharmer_2009',  target: 'haines_2019',   theme: '変革・変容' },
+  { source: 'scharmer_2009',  target: 'bushe_2009',    theme: '変革・変容' },
+  { source: 'haines_2019',    target: 'bushe_2009',    theme: '変革・変容' },
+  { source: 'creary_2022',    target: 'scharmer_2009', theme: '変革・変容' },
+  { source: 'hansen_2007',    target: 'springborg_2010', theme: '美学・感覚' },
+  { source: 'ladkin_2008',    target: 'hansen_2007',   theme: '美学・感覚' },
+  { source: 'bathurst_2013',  target: 'springborg_2010', theme: '美学・感覚' },
+  { source: 'ladkin_2013',    target: 'springborg_2010', theme: '美学・感覚' },
+  { source: 'tsoukas_2003',   target: 'nonaka_1998',   theme: '暗黙知・身体知' },
+  { source: 'tsoukas_2003',   target: 'wenger_1998',   theme: '暗黙知・身体知' },
+  { source: 'nonaka_1998',    target: 'wenger_1998',   theme: '暗黙知・身体知' },
+  { source: 'styhre_2004',    target: 'wright_2019',   theme: '暗黙知・身体知' },
+  { source: 'styhre_2004',    target: 'kupers_2011',   theme: '暗黙知・身体知' },
+  { source: 'wright_2019',    target: 'tsoukas_2003',  theme: '暗黙知・身体知' },
+  { source: 'raelin_2005',    target: 'gordon_2020',   theme: '集合的実践' },
+  { source: 'raelin_2016',    target: 'bushe_2009',    theme: '集合的実践' },
+  { source: 'raelin_2005',    target: 'bushe_2009',    theme: '集合的実践' },
+  { source: 'raelin_2016',    target: 'reinero_2021',  theme: '集合的実践' },
+  { source: 'ropo_2019',      target: 'nonaka_1998',   theme: '空間・物質性' },
+  { source: 'ropo_2013',      target: 'ford_2017',     theme: '空間・物質性' },
+  { source: 'ford_2017',      target: 'ropo_2019',     theme: '空間・物質性' },
+  { source: 'rigg_2018',      target: 'crossan_1999',  theme: '身体学習' },
+  { source: 'brendel_2016',   target: 'crossan_1999',  theme: '身体学習' },
+  { source: 'bigo_2022',      target: 'wenger_1998',   theme: '身体学習' },
+  { source: 'kenward_2018',   target: 'haines_2019',   theme: 'OD実践' },
+  { source: 'kenward_2018',   target: 'bushe_2009',    theme: 'OD実践' },
+  { source: 'hanold_2017',    target: 'haines_2019',   theme: 'OD実践' },
+];
+thematic.forEach(e => edges.push({ ...e, edgeType: 'thematic' }));
+
+const contexts = [
+  { key: '場の安全',    color: '#06B6D4' },
+  { key: '真正性',      color: '#EC4899' },
+  { key: '神経・生理',  color: '#EF4444' },
+  { key: '変革・変容',  color: '#F97316' },
+  { key: '美学・感覚',  color: '#8B5CF6' },
+  { key: '暗黙知・身体知', color: '#3B82F6' },
+  { key: '集合的実践',  color: '#10B981' },
+  { key: '空間・物質性', color: '#84CC16' },
+  { key: '身体学習',    color: '#F59E0B' },
+  { key: 'OD実践',     color: '#A855F7' },
+];
+
+const clusterList = allClusters.map(c => ({
+  key: c.key, label: c.label,
+  color: clusterColorMap[c.key] ?? '#888',
+  iconPath: c.iconPath,
+}));
+
+const graphJSON      = JSON.stringify({ nodes, edges });
+const contextsJSON   = JSON.stringify(contexts);
+const clustersJSON   = JSON.stringify(clusterList);
+---
+
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>文献マップ — 身体と場をめぐる知 | Body OD</title>
+  <meta name="description" content="身体・組織・変容をめぐる問いを、研究者たちはそれぞれの方法で言語化しています。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Sans+JP:wght@300;400&display=swap" />
+</head>
+<body>
+
+<!-- NAV BAR -->
+<nav id="topbar">
+  <a href="/od" id="back-link">← Body OD</a>
+  <span id="topbar-title">文献マップ</span>
+  <span id="topbar-count"></span>
+  <button id="sidebar-toggle">フィルター</button>
+</nav>
+
+<!-- Sidebar overlay (mobile) -->
+<div id="sidebar-overlay"></div>
+
+<!-- MAIN LAYOUT -->
+<div id="layout">
+
+  <!-- GRAPH -->
+  <div id="graph-wrap">
+    <svg id="svg"></svg>
+    <div id="lock-hint">
+      <span id="lock-hint-main">もう一度タップで詳細を見る</span>
+      <span id="lock-hint-sub">背景をタップで解除</span>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <p id="intro-text">身体・組織・変容をめぐる問いを、研究者たちはそれぞれの方法で言語化しています。私が現場で感じてきたことと共鳴するものを、ここに集めました。</p>
+
+    <div class="sidebar-section">
+      <input id="search" type="text" placeholder="著者・キーワードで探す..." autocomplete="off" />
+    </div>
+
+    <div class="sidebar-section">
+      <p class="section-label">クラスター</p>
+      <div id="cluster-filters"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <p class="section-label">テーマで見る</p>
+      <div id="context-filters"></div>
+    </div>
+
+    <button id="reset-btn">すべて表示</button>
+  </aside>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="hidden">
+  <button id="popup-close">✕</button>
+  <div id="popup-inner">
+    <p id="popup-cluster"></p>
+    <h2 id="popup-title"></h2>
+    <p id="popup-meta"></p>
+    <div class="popup-divider"></div>
+    <p class="popup-label">研究の内容（私の要約）</p>
+    <p id="popup-abstract"></p>
+    <a id="popup-scholar" href="#" target="_blank" rel="noopener noreferrer">
+      アブストラクトを原文で読む →
+    </a>
+    <div class="popup-divider"></div>
+    <p class="popup-label">私の受け取り</p>
+    <p id="popup-practice"></p>
+  </div>
+</div>
+<div id="popup-overlay" class="hidden"></div>
+
+<!-- Data elements -->
+<script type="application/json" id="gd" set:html={graphJSON}></script>
+<script type="application/json" id="cd" set:html={contextsJSON}></script>
+<script type="application/json" id="kd" set:html={clustersJSON}></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f7f5f0;
+    color: #1a1a18;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* NAV */
+  #topbar {
+    height: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    border-bottom: 1px solid rgba(26,26,24,0.08);
+    background: rgba(247,245,240,0.96);
+    backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  #back-link {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    color: rgba(26,26,24,0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  #back-link:hover { color: #1a1a18; }
+  #topbar-title {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(26,26,24,0.35);
+  }
+  #topbar-count {
+    margin-left: auto;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(26,26,24,0.25);
+  }
+
+  /* LAYOUT */
+  #layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+  #graph-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  #svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 272px;
+    min-width: 272px;
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px 16px 40px;
+    border-left: 1px solid rgba(26,26,24,0.08);
+    background: rgba(247,245,240,0.8);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  #intro-text {
+    font-size: 11px;
+    line-height: 1.9;
+    color: rgba(26,26,24,0.4);
+    letter-spacing: 0.04em;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(26,26,24,0.06);
+  }
+  .sidebar-section {
+    margin-bottom: 20px;
+  }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(26,26,24,0.3);
+    margin-bottom: 8px;
+  }
+  #search {
+    width: 100%;
+    background: rgba(26,26,24,0.04);
+    border: 1px solid rgba(26,26,24,0.1);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    color: #1a1a18;
+    letter-spacing: 0.04em;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #search::placeholder { color: rgba(26,26,24,0.2); }
+  #search:focus { border-color: rgba(26,26,24,0.25); }
+
+  /* FILTER CHIPS */
+  #cluster-filters, #context-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(26,26,24,0.1);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(26,26,24,0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+  }
+  .chip:hover { border-color: rgba(26,26,24,0.3); color: #1a1a18; }
+  .chip.active { color: #f7f5f0; font-weight: 400; }
+  .chip-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  #reset-btn {
+    margin-top: auto;
+    padding-top: 16px;
+    background: none;
+    border: none;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(26,26,24,0.2);
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    text-align: left;
+    transition: color 0.2s;
+  }
+  #reset-btn:hover { color: rgba(26,26,24,0.5); }
+
+  /* POPUP */
+  #popup-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,24,0.18);
+    z-index: 50;
+    backdrop-filter: blur(2px);
+  }
+  #popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(600px, 90vw);
+    max-height: 80vh;
+    background: #f7f5f0;
+    border: 1px solid rgba(26,26,24,0.12);
+    border-radius: 8px;
+    z-index: 51;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  #popup-close {
+    position: absolute; top: 12px; right: 14px;
+    background: none; border: none;
+    color: rgba(26,26,24,0.35);
+    font-size: 16px; cursor: pointer;
+    transition: color 0.2s;
+    z-index: 1;
+  }
+  #popup-close:hover { color: #1a1a18; }
+  #popup-inner {
+    padding: 28px 32px 32px;
+    overflow-y: auto;
+  }
+  #popup-cluster {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  #popup-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #1a1a18;
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  #popup-meta {
+    font-size: 11px;
+    color: rgba(26,26,24,0.4);
+    letter-spacing: 0.04em;
+    margin-bottom: 0;
+  }
+  .popup-divider {
+    height: 1px;
+    background: rgba(26,26,24,0.07);
+    margin: 16px 0;
+  }
+  .popup-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(26,26,24,0.3);
+    margin-bottom: 8px;
+  }
+  #popup-abstract {
+    font-size: 12.5px;
+    line-height: 2;
+    color: rgba(26,26,24,0.6);
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+  #popup-scholar {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: rgba(26,26,24,0.4);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(26,26,24,0.15);
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  #popup-scholar:hover {
+    color: rgba(26,26,24,0.8);
+    border-color: rgba(26,26,24,0.4);
+  }
+  #popup-practice {
+    font-size: 13px;
+    line-height: 2;
+    color: rgba(26,26,24,0.75);
+    letter-spacing: 0.04em;
+  }
+
+  .hidden { display: none !important; }
+
+  /* SVG elements */
+  .node-label {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 10px;
+    font-weight: 300;
+    fill: rgba(26,26,24,0.4);
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    user-select: none;
+  }
+  .node-circle {
+    cursor: pointer;
+    transition: filter 0.2s;
+  }
+  .link { pointer-events: none; }
+
+  #lock-hint {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: rgba(247,245,240,0.9);
+    border: 1px solid rgba(26,26,24,0.1);
+    border-radius: 12px;
+    padding: 8px 18px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  #lock-hint.visible { opacity: 1; }
+  #lock-hint-main {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: rgba(26,26,24,0.75);
+  }
+  #lock-hint-sub {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(26,26,24,0.35);
+  }
+
+  /* Mobile sidebar toggle button (hidden on desktop) */
+  #sidebar-toggle {
+    display: none;
+    margin-left: auto;
+    background: none;
+    border: 1px solid rgba(26,26,24,0.15);
+    color: rgba(26,26,24,0.5);
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    transition: all 0.2s;
+  }
+  #sidebar-toggle:hover { border-color: rgba(26,26,24,0.3); color: #1a1a18; }
+
+  /* Sidebar overlay (mobile) */
+  #sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,24,0.25);
+    z-index: 15;
+    backdrop-filter: blur(2px);
+  }
+  #sidebar-overlay.active { display: block; }
+
+  /* Mobile layout */
+  @media (max-width: 768px) {
+    #topbar-count { display: none; }
+
+    #sidebar-toggle { display: block; }
+
+    #sidebar {
+      position: fixed;
+      right: -100%;
+      top: 48px;
+      bottom: 0;
+      width: 85%;
+      max-width: 300px;
+      height: auto;
+      z-index: 20;
+      transition: right 0.3s ease;
+      border-left: 1px solid rgba(26,26,24,0.1);
+    }
+    #sidebar.open { right: 0; }
+
+    #graph-wrap { width: 100%; }
+  }
+</style>
+
+<script>
+  import * as d3 from 'd3';
+  const { nodes, edges } = JSON.parse(document.getElementById('gd').textContent);
+  const contexts  = JSON.parse(document.getElementById('cd').textContent);
+  const clusters  = JSON.parse(document.getElementById('kd').textContent);
+
+  // State
+  let activeCluster = null;
+  let activeContext = null;
+  let searchQuery   = '';
+
+  // Helpers
+  function getRadius(citations) {
+    if (!citations) return 7;
+    if (citations >= 10000) return 20;
+    if (citations >= 2000)  return 16;
+    if (citations >= 500)   return 13;
+    if (citations >= 100)   return 10;
+    return 7;
+  }
+
+  // Build connected-node lookup
+  function buildAdjacency(links) {
+    const adj = new Map();
+    links.forEach(l => {
+      const s = l.source.id ?? l.source;
+      const t = l.target.id ?? l.target;
+      if (!adj.has(s)) adj.set(s, new Set());
+      if (!adj.has(t)) adj.set(t, new Set());
+      adj.get(s).add(t);
+      adj.get(t).add(s);
+    });
+    return adj;
+  }
+
+  // D3 setup
+  const container = document.getElementById('graph-wrap');
+  const svgEl     = document.getElementById('svg');
+  let W = container.clientWidth;
+  let H = container.clientHeight;
+
+  const svg = d3.select('#svg');
+
+  // Zoom
+  const zoomG = svg.append('g').attr('class', 'zoom-root');
+  const zoom = d3.zoom()
+    .scaleExtent([0.3, 4])
+    .on('zoom', e => zoomG.attr('transform', e.transform));
+  svg.call(zoom);
+
+  // Glow filter
+  const defs = svg.append('defs');
+  const filter = defs.append('filter').attr('id', 'glow').attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+  filter.append('feGaussianBlur').attr('stdDeviation', '3').attr('result', 'blur');
+  const merge = filter.append('feMerge');
+  merge.append('feMergeNode').attr('in', 'blur');
+  merge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+  // Link group
+  const linkG = zoomG.append('g').attr('class', 'links');
+  // Node group
+  const nodeG = zoomG.append('g').attr('class', 'nodes');
+
+  // Simulation
+  const simulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(edges).id(d => d.id).distance(d => d.edgeType === 'cluster' ? 120 : 260).strength(d => d.edgeType === 'cluster' ? 0.2 : 0.08))
+    .force('charge', d3.forceManyBody().strength(-500))
+    .force('center', d3.forceCenter(W / 2, H / 2))
+    .force('x', d3.forceX(W / 2).strength(0.04))
+    .force('y', d3.forceY(H / 2).strength(0.04))
+    .force('collision', d3.forceCollide().radius(d => getRadius(d.citations) + 48));
+
+  // Draw links (curved paths)
+  const link = linkG.selectAll('path')
+    .data(edges)
+    .join('path')
+    .attr('class', 'link')
+    .attr('fill', 'none')
+    .attr('stroke', d => d.edgeType === 'thematic'
+      ? (contexts.find(c => c.key === d.theme)?.color ?? '#1a1a18')
+      : '#1a1a18')
+    .attr('stroke-opacity', d => d.edgeType === 'thematic' ? 0.18 : 0.08)
+    .attr('stroke-width', d => d.edgeType === 'thematic' ? 1.2 : 0.6);
+
+  // Draw nodes
+  const nodeGroup = nodeG.selectAll('g')
+    .data(nodes)
+    .join('g')
+    .attr('class', 'node-group')
+    .style('cursor', 'pointer')
+    .call(d3.drag()
+      .on('start', (event, d) => {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x; d.fy = d.y;
+      })
+      .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+      .on('end', (event, d) => {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null; d.fy = null;
+      })
+    );
+
+  // Soft halo (behind)
+  nodeGroup.append('circle')
+    .attr('r', d => getRadius(d.citations) + 6)
+    .attr('fill', d => d.color)
+    .attr('opacity', 0.08);
+
+  // Main circle
+  nodeGroup.append('circle')
+    .attr('class', 'node-circle')
+    .attr('r', d => getRadius(d.citations))
+    .attr('fill', d => d.color)
+    .attr('fill-opacity', 0.7)
+    .attr('stroke', d => d.color)
+    .attr('stroke-width', 1)
+    .attr('stroke-opacity', 0.4);
+
+  // Icon (SVG path scaled inside circle)
+  nodeGroup.append('g')
+    .attr('class', 'node-icon')
+    .each(function(d) {
+      const r = getRadius(d.citations);
+      const scale = (r * 1.1) / 12;
+      d3.select(this)
+        .append('path')
+        .attr('d', d.iconPath)
+        .attr('transform', `translate(${-12 * scale}, ${-12 * scale}) scale(${scale})`)
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(247,245,240,0.85)')
+        .attr('stroke-width', 1.5 / scale)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round');
+    });
+
+  // Keyword label (title before colon, max 4 words)
+  nodeGroup.append('text')
+    .attr('dy', d => getRadius(d.citations) + 14)
+    .attr('text-anchor', 'middle')
+    .style('font-family', "'Noto Sans JP', sans-serif")
+    .style('font-size', '10px')
+    .style('font-weight', '300')
+    .style('fill', d => d.color)
+    .style('letter-spacing', '0.04em')
+    .style('pointer-events', 'none')
+    .style('user-select', 'none')
+    .text(d => d.keyword || d.title.split(':')[0].split(/\s+/).slice(0, 3).join(' '));
+
+  // Author + year (smaller, below keyword)
+  nodeGroup.append('text')
+    .attr('class', 'node-label')
+    .attr('dy', d => getRadius(d.citations) + 26)
+    .attr('text-anchor', 'middle')
+    .style('font-family', "'Noto Sans JP', sans-serif")
+    .style('font-size', '9px')
+    .style('font-weight', '300')
+    .style('fill', 'rgba(26,26,24,0.38)')
+    .style('letter-spacing', '0.04em')
+    .style('pointer-events', 'none')
+    .style('user-select', 'none')
+    .text(d => `${d.authorShort} ${d.year}`);
+
+  // Simulation tick — curved paths
+  simulation.on('tick', () => {
+    link.attr('d', d => {
+      const sx = d.source.x, sy = d.source.y;
+      const tx = d.target.x, ty = d.target.y;
+      const mx = (sx + tx) / 2, my = (sy + ty) / 2;
+      const dx = tx - sx, dy = ty - sy;
+      const len = Math.sqrt(dx * dx + dy * dy) || 1;
+      const curve = Math.min(len * 0.14, 36);
+      const cx = mx + (-dy / len) * curve;
+      const cy = my + (dx / len) * curve;
+      return `M${sx},${sy} Q${cx},${cy} ${tx},${ty}`;
+    });
+    nodeGroup.attr('transform', d => `translate(${d.x},${d.y})`);
+  });
+
+  // After layout settles, switch to gentle float mode
+  simulation.on('end', () => {
+    let t = 0;
+    simulation.force('drift', function() {
+      t += 0.5;
+      nodes.forEach((d, i) => {
+        d.vx += Math.sin(t * 0.007 + i * 2.3) * 0.22;
+        d.vy += Math.cos(t * 0.009 + i * 1.7) * 0.22;
+      });
+    });
+    simulation
+      .velocityDecay(0.68)
+      .alphaDecay(0)
+      .alpha(0.06)
+      .restart();
+  });
+
+  // Hover + click interactions
+  const adj = buildAdjacency(edges);
+  let lockedId = null;
+  const lockHint = document.getElementById('lock-hint');
+
+  function applyNodeHighlight(d) {
+    const connected = adj.get(d.id) ?? new Set();
+    nodeGroup.select('circle.node-circle')
+      .attr('fill-opacity', n => n.id === d.id ? 1 : connected.has(n.id) ? 0.85 : 0.15)
+      .attr('stroke-opacity', n => n.id === d.id ? 1 : connected.has(n.id) ? 0.6 : 0.1);
+    nodeGroup.select('.node-icon path')
+      .attr('stroke', n => n.id === d.id || connected.has(n.id) ? 'rgba(247,245,240,0.9)' : 'rgba(247,245,240,0.3)');
+    nodeGroup.selectAll('text')
+      .attr('opacity', n => n.id === d.id ? 1 : connected.has(n.id) ? 0.8 : 0.1);
+    link
+      .attr('stroke-opacity', l => {
+        const s = l.source.id, t = l.target.id;
+        return (s === d.id || t === d.id) ? (l.edgeType === 'thematic' ? 0.85 : 0.5) : 0.02;
+      })
+      .attr('stroke-width', l => {
+        const s = l.source.id, t = l.target.id;
+        return (s === d.id || t === d.id) ? (l.edgeType === 'thematic' ? 1.5 : 0.8) : 0.5;
+      });
+  }
+
+  nodeGroup
+    .on('mouseover', function(event, d) {
+      if (lockedId) return; // don't override locked highlight
+      applyNodeHighlight(d);
+    })
+    .on('mouseout', function() {
+      if (lockedId) return; // keep locked highlight
+      applyFilter();
+    })
+    .on('click', function(event, d) {
+      event.stopPropagation();
+      if (lockedId === d.id) {
+        // second click on same node → open popup
+        openPopup(d);
+      } else {
+        // first click → lock highlight, allow tracing connections
+        lockedId = d.id;
+        applyNodeHighlight(d);
+        lockHint.classList.add('visible');
+      }
+    });
+
+  // Click on background → unlock
+  svg.on('click', function() {
+    if (lockedId) {
+      lockedId = null;
+      applyFilter();
+      lockHint.classList.remove('visible');
+    }
+  });
+
+  // Popup
+  const popup        = document.getElementById('popup');
+  const overlay      = document.getElementById('popup-overlay');
+  const popupClose   = document.getElementById('popup-close');
+  const popupCluster = document.getElementById('popup-cluster');
+  const popupTitle   = document.getElementById('popup-title');
+  const popupMeta    = document.getElementById('popup-meta');
+  const popupAbstract = document.getElementById('popup-abstract');
+  const popupScholar  = document.getElementById('popup-scholar');
+  const popupPractice = document.getElementById('popup-practice');
+
+  function openPopup(d) {
+    popupCluster.textContent  = d.clusterLabel;
+    popupCluster.style.color  = d.color;
+    popupTitle.textContent    = d.title;
+    popupMeta.textContent     = `${d.author}  /  ${d.year}  /  ${d.journal}${d.citations ? '  /  ' + d.citations.toLocaleString() + ' 引用' : ''}`;
+    popupAbstract.textContent = d.abstract;
+    popupScholar.href         = `https://scholar.google.com/scholar?q=${encodeURIComponent(d.title + ' ' + d.author.split(',')[0])}`;
+    popupPractice.textContent = d.practice || '—';
+    popup.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+  }
+
+  function closePopup() {
+    popup.classList.add('hidden');
+    overlay.classList.add('hidden');
+  }
+
+  popupClose.addEventListener('click', closePopup);
+  overlay.addEventListener('click', closePopup);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+
+  // Count display
+  document.getElementById('topbar-count').textContent = `${nodes.length} 論文`;
+
+  // Filter logic
+  function applyFilter() {
+    const query = searchQuery.toLowerCase();
+
+    const visibleIds = new Set(
+      nodes.filter(n => {
+        const matchCluster  = !activeCluster || n.cluster === activeCluster;
+        const contextNodes  = activeContext
+          ? edges.filter(e => e.theme === activeContext)
+              .flatMap(e => [e.source.id ?? e.source, e.target.id ?? e.target])
+          : null;
+        const matchContext  = !activeContext || (contextNodes && contextNodes.includes(n.id));
+        const matchSearch   = !query
+          || n.authorShort.toLowerCase().includes(query)
+          || n.author.toLowerCase().includes(query)
+          || n.title.toLowerCase().includes(query)
+          || n.clusterLabel.toLowerCase().includes(query);
+        return matchCluster && matchContext && matchSearch;
+      }).map(n => n.id)
+    );
+
+    nodeGroup.select('circle.node-circle')
+      .attr('fill-opacity', n => visibleIds.has(n.id) ? 0.85 : 0.1)
+      .attr('stroke-opacity', n => visibleIds.has(n.id) ? 0.6 : 0.05);
+    nodeGroup.select('.node-icon path')
+      .attr('stroke', n => visibleIds.has(n.id) ? 'rgba(6,8,15,0.8)' : 'rgba(6,8,15,0.2)');
+    nodeGroup.select('text')
+      .attr('opacity', n => visibleIds.has(n.id) ? 0.7 : 0.08);
+    link.attr('stroke-opacity', l => {
+      const s = l.source.id ?? l.source, t = l.target.id ?? l.target;
+      return visibleIds.has(s) && visibleIds.has(t)
+        ? (l.edgeType === 'thematic' ? 0.35 : 0.12)
+        : 0.02;
+    });
+  }
+
+  // Build cluster chips
+  const clusterWrap = document.getElementById('cluster-filters');
+  clusters.forEach(c => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.dataset.key = c.key;
+    chip.innerHTML = `<span class="chip-dot" style="background:${c.color}"></span>${c.label}`;
+    chip.addEventListener('click', () => {
+      if (activeCluster === c.key) {
+        activeCluster = null;
+        chip.classList.remove('active');
+        chip.style.background = '';
+        chip.style.borderColor = '';
+      } else {
+        activeCluster = c.key;
+        activeContext = null;
+        document.querySelectorAll('#cluster-filters .chip').forEach(el => {
+          el.classList.remove('active');
+          el.style.background = '';
+          el.style.borderColor = '';
+        });
+        document.querySelectorAll('#context-filters .chip').forEach(el => {
+          el.classList.remove('active');
+          el.style.background = '';
+          el.style.borderColor = '';
+        });
+        chip.classList.add('active');
+        chip.style.background = c.color;
+        chip.style.borderColor = c.color;
+      }
+      applyFilter();
+    });
+    clusterWrap.appendChild(chip);
+  });
+
+  // Build context chips
+  const contextWrap = document.getElementById('context-filters');
+  contexts.forEach(ctx => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.dataset.key = ctx.key;
+    chip.innerHTML = `<span class="chip-dot" style="background:${ctx.color}"></span>${ctx.key}`;
+    chip.addEventListener('click', () => {
+      if (activeContext === ctx.key) {
+        activeContext = null;
+        chip.classList.remove('active');
+        chip.style.background = '';
+        chip.style.borderColor = '';
+      } else {
+        activeContext = ctx.key;
+        activeCluster = null;
+        document.querySelectorAll('#context-filters .chip').forEach(el => {
+          el.classList.remove('active');
+          el.style.background = '';
+          el.style.borderColor = '';
+        });
+        document.querySelectorAll('#cluster-filters .chip').forEach(el => {
+          el.classList.remove('active');
+          el.style.background = '';
+          el.style.borderColor = '';
+        });
+        chip.classList.add('active');
+        chip.style.background = ctx.color;
+        chip.style.borderColor = ctx.color;
+      }
+      applyFilter();
+    });
+    contextWrap.appendChild(chip);
+  });
+
+  // Search
+  document.getElementById('search').addEventListener('input', function() {
+    searchQuery = this.value;
+    applyFilter();
+  });
+
+  // Reset
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    activeCluster = null;
+    activeContext = null;
+    searchQuery   = '';
+    document.getElementById('search').value = '';
+    document.querySelectorAll('.chip').forEach(el => {
+      el.classList.remove('active');
+      el.style.background = '';
+      el.style.borderColor = '';
+    });
+    applyFilter();
+  });
+
+  // Resize
+  new ResizeObserver(() => {
+    W = container.clientWidth;
+    H = container.clientHeight;
+    simulation.force('center', d3.forceCenter(W / 2, H / 2)).alpha(0.3).restart();
+  }).observe(container);
+
+  // Mobile sidebar toggle
+  const sidebarToggle  = document.getElementById('sidebar-toggle');
+  const sidebarEl      = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+  function openSidebar()  { sidebarEl.classList.add('open');    sidebarOverlay.classList.add('active'); }
+  function closeSidebar() { sidebarEl.classList.remove('open'); sidebarOverlay.classList.remove('active'); }
+
+  sidebarToggle?.addEventListener('click', () => {
+    sidebarEl.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+  sidebarOverlay?.addEventListener('click', closeSidebar);
+
+</script>
+
+</body>
+</html>
