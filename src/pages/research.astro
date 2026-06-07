@@ -874,7 +874,9 @@ const clustersJSON   = JSON.stringify(clusterList);
     popupMeta.textContent     = `${d.author}  /  ${d.year}  /  ${d.journal}${d.citations ? '  /  ' + d.citations.toLocaleString() + ' 引用' : ''}`;
     popupAbstract.textContent = d.abstract;
     popupScholar.href         = `https://scholar.google.com/scholar?q=${encodeURIComponent(d.title + ' ' + d.author.split(',')[0])}`;
-    popupPractice.textContent = d.practice || '—';
+    popupPractice.innerHTML = d.practice
+      ? d.practice.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>')
+      : '—';
     popup.classList.remove('hidden');
     overlay.classList.remove('hidden');
   }
