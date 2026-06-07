@@ -50,5 +50,49 @@ const {
 
   <body>
     <slot />
+
+    <!-- Floating side nav (desktop only) -->
+    <nav id="side-nav" aria-label="サイドナビゲーション">
+      <a href="https://bmr.navigatejpn.com/product/bmr-web" target="_blank" rel="noopener noreferrer">
+        Body-Mind Reading<sup>®</sup>
+      </a>
+      <a href="/research">文献マップ</a>
+      <a href="/profile.pdf" target="_blank" rel="noopener noreferrer">Profile</a>
+    </nav>
+
+    <style>
+      #side-nav {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 28px;
+        z-index: 50;
+      }
+      #side-nav a {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        font-family: 'Noto Sans JP', sans-serif;
+        font-size: 10px;
+        font-weight: 300;
+        letter-spacing: 0.2em;
+        color: rgba(58, 56, 53, 0.28);
+        text-decoration: none;
+        transition: color 0.3s ease;
+        line-height: 1;
+      }
+      #side-nav a sup {
+        font-size: 0.65em;
+      }
+      #side-nav a:hover {
+        color: rgba(58, 56, 53, 0.7);
+      }
+      @media (max-width: 768px) {
+        #side-nav { display: none; }
+      }
+    </style>
   </body>
 </html>
