@@ -54,29 +54,42 @@ const {
       <div id="site-header-inner">
         <a href="/od" id="site-logo">Body OD</a>
         <span id="site-tagline">身体を入口にした<br />場と空気の探究</span>
+        <!-- Hamburger (mobile only) -->
+        <button id="menu-btn" aria-label="メニューを開く">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </header>
 
-    <!-- Page content with top padding for fixed header -->
+    <!-- Mobile menu overlay -->
+    <div id="mobile-menu" aria-hidden="true">
+      <button id="menu-close" aria-label="メニューを閉じる">✕</button>
+      <nav id="mobile-nav">
+        <a href="https://bmr.navigatejpn.com/product/bmr-web" target="_blank" rel="noopener noreferrer">Body-Mind Reading®</a>
+        <a href="/research">文献マップ</a>
+        <a href="/profile.pdf" target="_blank" rel="noopener noreferrer">Profile</a>
+      </nav>
+    </div>
+
+    <!-- Page content -->
     <div id="page-content">
       <slot />
     </div>
 
     <!-- Floating side nav (desktop only) -->
     <nav id="side-nav" aria-label="サイドナビゲーション">
-      <a href="https://bmr.navigatejpn.com/product/bmr-web" target="_blank" rel="noopener noreferrer">
-        Body-Mind Reading®
-      </a>
+      <a href="https://bmr.navigatejpn.com/product/bmr-web" target="_blank" rel="noopener noreferrer">Body-Mind Reading®</a>
       <a href="/research">文献マップ</a>
       <a href="/profile.pdf" target="_blank" rel="noopener noreferrer">Profile</a>
     </nav>
 
     <style>
+      /* ── Fixed header ── */
       #site-header {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
+        top: 0; left: 0; right: 0;
         z-index: 40;
         background: rgba(247, 245, 240, 0.94);
         backdrop-filter: blur(8px);
@@ -88,7 +101,7 @@ const {
         margin: 0 auto;
         padding: 20px clamp(1.5rem, 6vw, 4rem);
         display: flex;
-        align-items: baseline;
+        align-items: center;
         justify-content: space-between;
         gap: 24px;
       }
@@ -112,11 +125,79 @@ const {
         letter-spacing: 0.04em;
         color: rgba(58, 56, 53, 0.5);
       }
-      #page-content {
-        padding-top: 68px;
+
+      /* ── Hamburger button ── */
+      #menu-btn {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 32px;
+        height: 32px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        margin-left: auto;
+      }
+      #menu-btn span {
+        display: block;
+        width: 22px;
+        height: 1px;
+        background: rgba(58, 56, 53, 0.6);
+        transition: all 0.25s ease;
       }
 
-      /* Side nav */
+      /* ── Mobile menu overlay ── */
+      #mobile-menu {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        background: rgba(247, 245, 240, 0.97);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #mobile-menu.open {
+        display: flex;
+      }
+      #menu-close {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        background: none;
+        border: none;
+        font-size: 18px;
+        color: rgba(58, 56, 53, 0.5);
+        cursor: pointer;
+        padding: 8px;
+        transition: color 0.2s;
+      }
+      #menu-close:hover { color: rgba(58, 56, 53, 0.9); }
+      #mobile-nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+      }
+      #mobile-nav a {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 26px;
+        font-weight: 400;
+        letter-spacing: 0.06em;
+        color: rgba(58, 56, 53, 0.75);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      #mobile-nav a:hover { color: #3a3835; }
+
+      /* ── Page content offset ── */
+      #page-content { padding-top: 68px; }
+
+      /* ── Desktop side nav ── */
       #side-nav {
         position: fixed;
         right: 20px;
@@ -140,13 +221,35 @@ const {
         transition: color 0.3s ease;
         line-height: 1;
       }
-      #side-nav a:hover {
-        color: rgba(58, 56, 53, 0.8);
-      }
+      #side-nav a:hover { color: rgba(58, 56, 53, 0.8); }
+
+      /* ── Mobile breakpoint ── */
       @media (max-width: 768px) {
-        #side-nav { display: none; }
         #site-tagline { display: none; }
+        #menu-btn { display: flex; }
+        #side-nav { display: none; }
       }
     </style>
+
+    <script>
+      const menuBtn   = document.getElementById('menu-btn');
+      const menuClose = document.getElementById('menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      menuBtn?.addEventListener('click', () => {
+        mobileMenu?.classList.add('open');
+        mobileMenu?.setAttribute('aria-hidden', 'false');
+      });
+      menuClose?.addEventListener('click', () => {
+        mobileMenu?.classList.remove('open');
+        mobileMenu?.setAttribute('aria-hidden', 'true');
+      });
+      mobileMenu?.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+          mobileMenu.setAttribute('aria-hidden', 'true');
+        });
+      });
+    </script>
   </body>
 </html>
