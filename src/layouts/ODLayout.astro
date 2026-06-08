@@ -49,18 +49,74 @@ const {
   </head>
 
   <body>
-    <slot />
+    <!-- Fixed header -->
+    <header id="site-header">
+      <div id="site-header-inner">
+        <a href="/od" id="site-logo">Body OD</a>
+        <span id="site-tagline">身体を入口にした<br />場と空気の探究</span>
+      </div>
+    </header>
+
+    <!-- Page content with top padding for fixed header -->
+    <div id="page-content">
+      <slot />
+    </div>
 
     <!-- Floating side nav (desktop only) -->
     <nav id="side-nav" aria-label="サイドナビゲーション">
       <a href="https://bmr.navigatejpn.com/product/bmr-web" target="_blank" rel="noopener noreferrer">
-        Body-Mind Reading<sup>®</sup>
+        Body-Mind Reading®
       </a>
       <a href="/research">文献マップ</a>
       <a href="/profile.pdf" target="_blank" rel="noopener noreferrer">Profile</a>
     </nav>
 
     <style>
+      #site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 40;
+        background: rgba(247, 245, 240, 0.94);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-bottom: 1px solid rgba(58, 56, 53, 0.08);
+      }
+      #site-header-inner {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 20px clamp(1.5rem, 6vw, 4rem);
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 24px;
+      }
+      #site-logo {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--color-ink);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: opacity 0.2s;
+      }
+      #site-logo:hover { opacity: 0.6; }
+      #site-tagline {
+        text-align: right;
+        font-family: 'Noto Sans JP', sans-serif;
+        font-size: 11px;
+        font-weight: 300;
+        line-height: 1.8;
+        letter-spacing: 0.04em;
+        color: rgba(58, 56, 53, 0.5);
+      }
+      #page-content {
+        padding-top: 68px;
+      }
+
+      /* Side nav */
       #side-nav {
         position: fixed;
         right: 20px;
@@ -76,22 +132,20 @@ const {
         writing-mode: vertical-rl;
         text-orientation: mixed;
         font-family: 'Noto Sans JP', sans-serif;
-        font-size: 10px;
+        font-size: 13px;
         font-weight: 300;
         letter-spacing: 0.2em;
-        color: rgba(58, 56, 53, 0.28);
+        color: rgba(58, 56, 53, 0.48);
         text-decoration: none;
         transition: color 0.3s ease;
         line-height: 1;
       }
-      #side-nav a sup {
-        font-size: 0.65em;
-      }
       #side-nav a:hover {
-        color: rgba(58, 56, 53, 0.7);
+        color: rgba(58, 56, 53, 0.8);
       }
       @media (max-width: 768px) {
         #side-nav { display: none; }
+        #site-tagline { display: none; }
       }
     </style>
   </body>
