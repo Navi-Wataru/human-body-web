@@ -1,11 +1,11 @@
 ---
 interface Props {
-  idx: string;
+  idx?: string;
   title: string;
 }
 const { idx, title } = Astro.props;
 ---
 <div class="mb-11 flex items-baseline gap-[22px]">
-  <span class="font-latin text-[40px] font-medium leading-none text-seal">{idx}</span>
+  {idx && <span class="font-latin text-[40px] font-medium leading-none text-seal">{idx}</span>}
   <h2 class="font-serif text-h2 font-semibold text-ink">{title}</h2>
 </div>
