@@ -155,6 +155,25 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.18;
+  pointer-events: none;
+  user-select: none;
+}
+.hero h1,
+.hero .sub,
+.hero .scroll-hint {
+  position: relative;
+  z-index: 1;
 }
 .hero h1 {
   font-family: var(--mincho);
@@ -355,6 +374,13 @@ a:focus-visible, [tabindex]:focus-visible {
   outline: 1px solid var(--clay);
   outline-offset: 4px;
   border-radius: 1px;
+}
+
+@media (min-width: 761px) {
+  .hero-bg {
+    opacity: 0.40;
+    object-position: right center;
+  }
 }
 
 /* ── responsive ── */
