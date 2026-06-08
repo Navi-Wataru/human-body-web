@@ -19,7 +19,6 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
 
-    <!-- OGP -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://od.navigatejpn.com/od" />
     <meta property="og:title" content={title} />
@@ -32,7 +31,7 @@ const {
 
     <link rel="icon" href="/favicon-kankaku.png" type="image/png" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#f7f5f0" />
+    <meta name="theme-color" content="#f6f3ec" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Body OD" />
@@ -42,214 +41,40 @@ const {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap"
     />
 
     <slot name="head" />
   </head>
 
   <body>
-    <!-- Fixed header -->
-    <header id="site-header">
-      <div id="site-header-inner">
-        <a href="/od" id="site-logo">Body OD</a>
-        <span id="site-tagline">身体を入口にした<br />場と空気の探究</span>
-        <!-- Hamburger (mobile only) -->
-        <button id="menu-btn" aria-label="メニューを開く">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+    <nav>
+      <div class="brand">
+        <b>Body OD</b>
+        身体を入口にした 場と空気の探究
       </div>
-    </header>
-
-    <!-- Mobile menu overlay -->
-    <div id="mobile-menu" aria-hidden="true">
-      <button id="menu-close" aria-label="メニューを閉じる">✕</button>
-      <nav id="mobile-nav">
+      <div class="links">
         <a href="https://bmr.navigatejpn.com" target="_blank" rel="noopener noreferrer">Body-Mind Reading®</a>
         <a href="/research">文献マップ</a>
         <a href="/profile.pdf" target="_blank" rel="noopener noreferrer">Profile</a>
-      </nav>
-    </div>
-
-    <!-- Page content -->
-    <div id="page-content">
-      <slot />
-    </div>
-
-    <!-- Floating side nav (desktop only) -->
-    <nav id="side-nav" aria-label="サイドナビゲーション">
-      <a href="https://bmr.navigatejpn.com" target="_blank" rel="noopener noreferrer">Body-Mind Reading®</a>
-      <a href="/research">文献マップ</a>
-      <a href="/profile.pdf" target="_blank" rel="noopener noreferrer">Profile</a>
+      </div>
     </nav>
 
-    <style>
-      /* ── Fixed header ── */
-      #site-header {
-        position: fixed;
-        top: 0; left: 0; right: 0;
-        z-index: 40;
-        background: rgba(247, 245, 240, 0.94);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border-bottom: 1px solid rgba(58, 56, 53, 0.08);
-      }
-      #site-header-inner {
-        max-width: 1080px;
-        margin: 0 auto;
-        padding: 20px clamp(1.5rem, 6vw, 4rem);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-      }
-      #site-logo {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 22px;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        color: var(--color-ink);
-        text-decoration: none;
-        white-space: nowrap;
-        transition: opacity 0.2s;
-      }
-      #site-logo:hover { opacity: 0.6; }
-      #site-tagline {
-        text-align: right;
-        font-family: 'Noto Sans JP', sans-serif;
-        font-size: 11px;
-        font-weight: 300;
-        line-height: 1.8;
-        letter-spacing: 0.04em;
-        color: rgba(58, 56, 53, 0.5);
-      }
-
-      /* ── Hamburger button ── */
-      #menu-btn {
-        display: none;
-        flex-direction: column;
-        justify-content: center;
-        gap: 5px;
-        width: 32px;
-        height: 32px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 4px;
-        margin-left: auto;
-      }
-      #menu-btn span {
-        display: block;
-        width: 22px;
-        height: 1px;
-        background: rgba(58, 56, 53, 0.6);
-        transition: all 0.25s ease;
-      }
-
-      /* ── Mobile menu overlay ── */
-      #mobile-menu {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 60;
-        background: rgba(247, 245, 240, 0.97);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      #mobile-menu.open {
-        display: flex;
-      }
-      #menu-close {
-        position: absolute;
-        top: 24px;
-        right: 24px;
-        background: none;
-        border: none;
-        font-size: 18px;
-        color: rgba(58, 56, 53, 0.5);
-        cursor: pointer;
-        padding: 8px;
-        transition: color 0.2s;
-      }
-      #menu-close:hover { color: rgba(58, 56, 53, 0.9); }
-      #mobile-nav {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
-      }
-      #mobile-nav a {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 26px;
-        font-weight: 400;
-        letter-spacing: 0.06em;
-        color: rgba(58, 56, 53, 0.75);
-        text-decoration: none;
-        transition: color 0.2s;
-      }
-      #mobile-nav a:hover { color: #3a3835; }
-
-      /* ── Page content offset ── */
-      #page-content { padding-top: 68px; }
-
-      /* ── Desktop side nav ── */
-      #side-nav {
-        position: fixed;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 28px;
-        z-index: 50;
-      }
-      #side-nav a {
-        writing-mode: vertical-rl;
-        text-orientation: mixed;
-        font-family: 'Noto Sans JP', sans-serif;
-        font-size: 13px;
-        font-weight: 300;
-        letter-spacing: 0.2em;
-        color: rgba(58, 56, 53, 0.48);
-        text-decoration: none;
-        transition: color 0.3s ease;
-        line-height: 1;
-      }
-      #side-nav a:hover { color: rgba(58, 56, 53, 0.8); }
-
-      /* ── Mobile breakpoint ── */
-      @media (max-width: 768px) {
-        #site-tagline { display: none; }
-        #menu-btn { display: flex; }
-        #side-nav { display: none; }
-      }
-    </style>
+    <slot />
 
     <script>
-      const menuBtn   = document.getElementById('menu-btn');
-      const menuClose = document.getElementById('menu-close');
-      const mobileMenu = document.getElementById('mobile-menu');
-
-      menuBtn?.addEventListener('click', () => {
-        mobileMenu?.classList.add('open');
-        mobileMenu?.setAttribute('aria-hidden', 'false');
-      });
-      menuClose?.addEventListener('click', () => {
-        mobileMenu?.classList.remove('open');
-        mobileMenu?.setAttribute('aria-hidden', 'true');
-      });
-      mobileMenu?.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-          mobileMenu.classList.remove('open');
-          mobileMenu.setAttribute('aria-hidden', 'true');
-        });
-      });
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
     </script>
   </body>
 </html>
