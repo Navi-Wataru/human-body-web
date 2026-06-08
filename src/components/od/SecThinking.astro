@@ -29,7 +29,42 @@
 
   <p class="statement reveal">だとすれば、組織文化にも<br />身体のレイヤーがあるのではないだろうか</p>
 
-  <div class="spacer-s"></div>
+  <!-- 水面断面図：身体→意識→組織・文化 -->
+  <div class="mark reveal" style="margin-top: calc(8vh * var(--rhythm,1)); margin-bottom: calc(6vh * var(--rhythm,1));">
+    <svg width="100%" viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-linecap="round">
+
+      <!-- ── Below surface: consciousness waves (circles from origin) ── -->
+      <path d="M 210 250 Q 240 218 270 250" stroke-width="1.2" opacity=".72"/>
+      <path d="M 180 250 Q 240 188 300 250" stroke-width="1.1" opacity=".52"/>
+      <path d="M 150 250 Q 240 160 330 250" stroke-width="1"   opacity=".34"/>
+
+      <!-- ── Surface line (slightly wavy) ── -->
+      <path d="M 28 145 Q 134 138 240 145 Q 346 152 452 145" stroke-width="1.4" opacity=".70"/>
+
+      <!-- ── Above surface: organizational waves (circles from surface point) ── -->
+      <path d="M 208 145 Q 240 112 272 145" stroke-width="1.1" opacity=".60"/>
+      <path d="M 168 145 Q 240  72 312 145" stroke-width="1"   opacity=".38"/>
+      <path d="M 118 145 Q 240  18 362 145" stroke-width="1"   opacity=".20"/>
+
+      <!-- ── Origin: body state ── -->
+      <circle cx="240" cy="250" r="4.6" fill="currentColor" stroke="none" opacity=".90"/>
+      <circle cx="240" cy="250" r="14"  stroke-width=".9"   opacity=".14"/>
+
+      <!-- ── Dashed connector: origin → surface ── -->
+      <line x1="240" y1="245" x2="240" y2="155" stroke-width=".9" stroke-dasharray="2 5" opacity=".20"/>
+
+      <!-- ── Labels ── -->
+      <text x="308" y="52"  font-size="9.5" fill="currentColor" stroke="none" opacity=".55" letter-spacing="1.5" style="font-family:var(--gothic);font-weight:300;">組織・文化</text>
+      <line x1="300" y1="50"  x2="308" y2="50"  stroke-width=".9" opacity=".32"/>
+
+      <text x="316" y="196" font-size="9.5" fill="currentColor" stroke="none" opacity=".50" letter-spacing="1.5" style="font-family:var(--gothic);font-weight:300;">意識の状態</text>
+      <line x1="308" y1="194" x2="316" y2="194" stroke-width=".9" opacity=".28"/>
+
+      <text x="262" y="258" font-size="9.5" fill="currentColor" stroke="none" opacity=".55" letter-spacing="1.5" style="font-family:var(--gothic);font-weight:300;">身体の状態</text>
+      <line x1="254" y1="250" x2="262" y2="250" stroke-width=".9" opacity=".32"/>
+
+    </svg>
+  </div>
 
   <p class="lead reveal">文化は、毎日の身体的なやりとりの積み重ねとして生きているのかもしれない。<br />
   挨拶の仕方、会議のテンポ、会議を延長させるときの沈黙。<br />
