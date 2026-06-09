@@ -230,9 +230,14 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
   text-align: left;
-  align-items: start;
+  align-items: stretch;
 }
-.card { padding: 28px 24px; border-radius: 3px; }
+.card {
+  padding: 28px 24px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+}
 .card .k {
   font-family: var(--gothic);
   font-size: 10.5px;
@@ -241,7 +246,7 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
   color: var(--clay);
 }
 .card .name { font-size: 18px; font-weight: 500; margin: 8px 0 20px; letter-spacing: 0.04em; }
-.card .row { padding: 12px 0; }
+.card .row { padding: 14px 0; }
 .card .row .t {
   font-family: var(--gothic);
   font-weight: 300;
@@ -250,7 +255,7 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
   color: var(--ink-soft);
 }
 .card .row .v { font-size: 14px; line-height: 1.78; margin-top: 3px; }
-.card .ask { font-size: 14px; font-weight: 500; margin-top: 14px; }
+.card .ask { font-size: 14px; font-weight: 500; margin-top: auto; padding-top: 14px; }
 .card-illust {
   width: 100%;
   aspect-ratio: 5/3;
@@ -289,23 +294,27 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
   background: var(--cream-deep);
   border: 1px solid transparent;
   font-family: var(--gothic);
-  padding: 30px 24px;
   border-radius: 10px;
 }
 .card.kinetics .name { font-family: var(--gothic); }
 .card.kinetics .row { border-top: 1px solid var(--line); }
-.card.kinetics .ask { margin-top: 16px; }
+.card.kinetics .ask { border-top: 1px solid var(--line); }
 .card.kinetics .card-illust { border: 1px solid var(--line); border-radius: 12px; }
 
-/* card 3: KINESTHETICS */
-.card.kinesthetics { padding: 36px 26px; border: 0; }
+/* card 3: KINESTHETICS — 最も重要 */
+.card.kinesthetics {
+  padding: 28px 24px;
+  border: 1px solid rgba(171, 98, 68, 0.22);
+  border-radius: 10px;
+  background: rgba(171, 98, 68, 0.06);
+}
 .card.kinesthetics .k { opacity: 0.85; }
-.card.kinesthetics .name { font-family: var(--mincho); }
-.card.kinesthetics .row { padding: 14px 0; }
+.card.kinesthetics .name { font-family: var(--mincho); color: var(--clay); }
+.card.kinesthetics .row { border-top: 1px solid rgba(171, 98, 68, 0.14); }
 .card.kinesthetics .v { font-family: var(--mincho); color: var(--ink-soft); line-height: 2; }
-.card.kinesthetics .ask { font-family: var(--mincho); color: var(--ink-soft); }
+.card.kinesthetics .ask { font-family: var(--mincho); color: var(--clay); border-top: 1px solid rgba(171, 98, 68, 0.18); }
 .card.kinesthetics .card-illust {
-  border: 1px solid rgba(52, 48, 42, 0.10);
+  border: 1px solid rgba(171, 98, 68, 0.18);
   border-radius: 42% 58% 56% 44% / 50% 46% 54% 50%;
 }
 
