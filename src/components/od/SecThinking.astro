@@ -29,40 +29,104 @@
 
   <p class="statement reveal">だとすれば、組織文化にも<br />身体のレイヤーがあるのではないだろうか</p>
 
-  <!-- 水面断面図：身体→意識→組織・文化 -->
-  <div class="mark reveal" style="margin-top: calc(8vh * var(--rhythm,1)); margin-bottom: calc(6vh * var(--rhythm,1));">
-    <svg width="100%" viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-linecap="round">
+  <!-- 循環図：身体・意識・場・組織文化（Claude Design / body-od-visual.svg インライン） -->
+  <div class="state-viz reveal">
+    <svg width="100%" viewBox="0 0 680 455" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="身体・意識・場・組織文化が互いに絡み合う循環の図">
+      <defs>
+        <linearGradient id="rise" x1="0" y1="410" x2="0" y2="70" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#6a5d4d" stop-opacity="0.66"/>
+          <stop offset="1" stop-color="#6a5d4d" stop-opacity="0.34"/>
+        </linearGradient>
+      </defs>
 
-      <!-- ── Below surface: consciousness waves (circles from origin) ── -->
-      <path d="M 210 250 Q 240 218 270 250" stroke-width="1.2" opacity=".72"/>
-      <path d="M 180 250 Q 240 188 300 250" stroke-width="1.1" opacity=".52"/>
-      <path d="M 150 250 Q 240 160 330 250" stroke-width="1"   opacity=".34"/>
+      <!-- 組織・文化レイヤー：横に流れる繊維 -->
+      <path fill="none" stroke="#8a7762" stroke-linecap="round" stroke-width="1" stroke-opacity="0.42" d="M150,100 Q232,94 312,100 T468,100">
+        <animateTransform attributeName="transform" type="translate" values="-6 0;6 0;-6 0" dur="15s" repeatCount="indefinite"/>
+      </path>
+      <path fill="none" stroke="#8a7762" stroke-linecap="round" stroke-width="1" stroke-opacity="0.32" d="M150,116 Q232,122 312,116 T468,116">
+        <animateTransform attributeName="transform" type="translate" values="7 0;-7 0;7 0" dur="18s" repeatCount="indefinite"/>
+      </path>
+      <path fill="none" stroke="#8a7762" stroke-linecap="round" stroke-width="1" stroke-opacity="0.40" d="M152,132 Q234,126 314,132 T466,132">
+        <animateTransform attributeName="transform" type="translate" values="-5 0;5 0;-5 0" dur="13s" repeatCount="indefinite"/>
+      </path>
+      <path fill="none" stroke="#8a7762" stroke-linecap="round" stroke-width="0.9" stroke-opacity="0.26" d="M158,150 Q238,156 318,150 T460,150">
+        <animateTransform attributeName="transform" type="translate" values="6 0;-6 0;6 0" dur="21s" repeatCount="indefinite"/>
+      </path>
 
-      <!-- ── Surface line (slightly wavy) ── -->
-      <path d="M 28 145 Q 134 138 240 145 Q 346 152 452 145" stroke-width="1.4" opacity=".70"/>
+      <!-- 身体間の循環ループ -->
+      <path fill="none" stroke="url(#rise)" stroke-linecap="round" stroke-width="1.1" d="M200,410 C200,68 320,68 320,410 C320,250 200,250 200,410 Z">
+        <animateTransform attributeName="transform" type="rotate" values="-1.2 260 410;1.2 260 410;-1.2 260 410" dur="9s" repeatCount="indefinite"/>
+      </path>
+      <path fill="none" stroke="url(#rise)" stroke-linecap="round" stroke-width="1.1" d="M320,410 C320,68 440,68 440,410 C440,250 320,250 320,410 Z">
+        <animateTransform attributeName="transform" type="rotate" values="1.2 380 410;-1.2 380 410;1.2 380 410" dur="11s" repeatCount="indefinite"/>
+      </path>
+      <path fill="none" stroke="url(#rise)" stroke-linecap="round" stroke-width="1" d="M200,410 C200,52 440,52 440,410 C440,300 200,300 200,410 Z">
+        <animateTransform attributeName="transform" type="rotate" values="0.8 320 410;-0.8 320 410;0.8 320 410" dur="14s" repeatCount="indefinite"/>
+      </path>
 
-      <!-- ── Above surface: organizational waves (circles from surface point) ── -->
-      <path d="M 208 145 Q 240 112 272 145" stroke-width="1.1" opacity=".60"/>
-      <path d="M 168 145 Q 240  72 312 145" stroke-width="1"   opacity=".38"/>
-      <path d="M 118 145 Q 240  18 362 145" stroke-width="1"   opacity=".20"/>
+      <!-- 場・空気レイヤー：横の流れ -->
+      <path fill="none" stroke="#7e8c92" stroke-linecap="round" stroke-width="0.9" stroke-opacity="0.30" d="M130,192 Q240,186 350,192 T448,192">
+        <animateTransform attributeName="transform" type="translate" values="-7 0;7 0;-7 0" dur="14s" repeatCount="indefinite"/>
+      </path>
+      <path fill="none" stroke="#7e8c92" stroke-linecap="round" stroke-width="0.9" stroke-opacity="0.24" d="M126,212 Q236,206 346,212 T450,212">
+        <animateTransform attributeName="transform" type="translate" values="8 0;-8 0;8 0" dur="17s" repeatCount="indefinite"/>
+      </path>
+      <path fill="none" stroke="#7e8c92" stroke-linecap="round" stroke-width="0.8" stroke-opacity="0.18" d="M134,232 Q244,226 354,232 T446,232">
+        <animateTransform attributeName="transform" type="translate" values="-6 0;6 0;-6 0" dur="20s" repeatCount="indefinite"/>
+      </path>
 
-      <!-- ── Origin: body state ── -->
-      <circle cx="240" cy="250" r="4.6" fill="currentColor" stroke="none" opacity=".90"/>
-      <circle cx="240" cy="250" r="14"  stroke-width=".9"   opacity=".14"/>
+      <!-- 意識のさざ波（各身体から） -->
+      <ellipse fill="none" stroke="#7e8c92" stroke-width="0.8" cx="200" cy="300" rx="4" ry="1.5" opacity="0">
+        <animate attributeName="rx" values="4;48" dur="5s" begin="0s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="1.5;14" dur="5s" begin="0s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.30;0" dur="5s" begin="0s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse fill="none" stroke="#7e8c92" stroke-width="0.8" cx="200" cy="300" rx="4" ry="1.5" opacity="0">
+        <animate attributeName="rx" values="4;48" dur="5s" begin="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="1.5;14" dur="5s" begin="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.30;0" dur="5s" begin="2.5s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse fill="none" stroke="#7e8c92" stroke-width="0.8" cx="320" cy="300" rx="4" ry="1.5" opacity="0">
+        <animate attributeName="rx" values="4;48" dur="5s" begin="0.9s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="1.5;14" dur="5s" begin="0.9s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.30;0" dur="5s" begin="0.9s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse fill="none" stroke="#7e8c92" stroke-width="0.8" cx="320" cy="300" rx="4" ry="1.5" opacity="0">
+        <animate attributeName="rx" values="4;48" dur="5s" begin="3.4s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="1.5;14" dur="5s" begin="3.4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.30;0" dur="5s" begin="3.4s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse fill="none" stroke="#7e8c92" stroke-width="0.8" cx="440" cy="300" rx="4" ry="1.5" opacity="0">
+        <animate attributeName="rx" values="4;48" dur="5s" begin="1.7s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="1.5;14" dur="5s" begin="1.7s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.30;0" dur="5s" begin="1.7s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse fill="none" stroke="#7e8c92" stroke-width="0.8" cx="440" cy="300" rx="4" ry="1.5" opacity="0">
+        <animate attributeName="rx" values="4;48" dur="5s" begin="4.2s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="1.5;14" dur="5s" begin="4.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.30;0" dur="5s" begin="4.2s" repeatCount="indefinite"/>
+      </ellipse>
 
-      <!-- ── Dashed connector: origin → surface ── -->
-      <line x1="240" y1="245" x2="240" y2="155" stroke-width=".9" stroke-dasharray="2 5" opacity=".20"/>
+      <!-- 身体の原点 -->
+      <line stroke="#5b4f42" stroke-linecap="round" x1="178" y1="414" x2="222" y2="414" stroke-width="1" stroke-opacity="0.26"/>
+      <line stroke="#5b4f42" stroke-linecap="round" x1="298" y1="414" x2="342" y2="414" stroke-width="1" stroke-opacity="0.26"/>
+      <line stroke="#5b4f42" stroke-linecap="round" x1="418" y1="414" x2="462" y2="414" stroke-width="1" stroke-opacity="0.26"/>
+      <circle fill="#5b4f42" cx="200" cy="410" r="2.6"/>
+      <circle fill="#5b4f42" cx="320" cy="410" r="2.6"/>
+      <circle fill="#5b4f42" cx="440" cy="410" r="2.6"/>
 
-      <!-- ── Labels ── -->
-      <text x="308" y="52"  font-size="9.5" fill="currentColor" stroke="none" opacity=".55" letter-spacing="1.5" style="font-family:var(--gothic);font-weight:300;">組織・文化</text>
-      <line x1="300" y1="50"  x2="308" y2="50"  stroke-width=".9" opacity=".32"/>
+      <!-- ラベル -->
+      <text fill="#9a8e7b" font-family="'Helvetica Neue',Arial,sans-serif" font-size="11" letter-spacing="1.5" x="505" y="108">CULTURE</text>
+      <text fill="#4a4138" font-family="var(--gothic)" font-size="13" x="505" y="127">組織・文化</text>
 
-      <text x="316" y="196" font-size="9.5" fill="currentColor" stroke="none" opacity=".50" letter-spacing="1.5" style="font-family:var(--gothic);font-weight:300;">意識の状態</text>
-      <line x1="308" y1="194" x2="316" y2="194" stroke-width=".9" opacity=".28"/>
+      <text fill="#9a8e7b" font-family="'Helvetica Neue',Arial,sans-serif" font-size="11" letter-spacing="1.5" x="505" y="196">FIELD</text>
+      <text fill="#4a4138" font-family="var(--gothic)" font-size="13" x="505" y="215">場・空気</text>
 
-      <text x="262" y="258" font-size="9.5" fill="currentColor" stroke="none" opacity=".55" letter-spacing="1.5" style="font-family:var(--gothic);font-weight:300;">身体の状態</text>
-      <line x1="254" y1="250" x2="262" y2="250" stroke-width=".9" opacity=".32"/>
+      <text fill="#9a8e7b" font-family="'Helvetica Neue',Arial,sans-serif" font-size="11" letter-spacing="1.5" x="505" y="292">CONSCIOUSNESS</text>
+      <text fill="#4a4138" font-family="var(--gothic)" font-size="13" x="505" y="311">意識の状態</text>
 
+      <text fill="#9a8e7b" font-family="'Helvetica Neue',Arial,sans-serif" font-size="11" letter-spacing="1.5" x="505" y="388">BODY</text>
+      <text fill="#4a4138" font-family="var(--gothic)" font-size="13" x="505" y="407">身体の状態</text>
     </svg>
   </div>
 

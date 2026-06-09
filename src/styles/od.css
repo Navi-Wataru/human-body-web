@@ -205,6 +205,14 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
 .illust { margin: 6vh auto; color: var(--clay); opacity: 0.8; }
 .illust svg { display: block; margin: 0 auto; }
 
+/* ── state-viz (循環図) ── */
+.state-viz {
+  width: 100%;
+  max-width: 640px;
+  margin: calc(8vh * var(--rhythm, 1)) auto calc(6vh * var(--rhythm, 1));
+}
+.state-viz svg { display: block; width: 100%; }
+
 /* ── marks ── */
 .mark {
   display: block;
