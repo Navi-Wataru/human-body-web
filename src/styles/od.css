@@ -11,6 +11,7 @@
   --clay:       #ab6244;
   --clay-deep:  #8a4d35;
   --line:       rgba(52, 48, 42, 0.13);
+  --icon:       #9A8E7C;
 
   --mincho: "Shippori Mincho", serif;
   --gothic: "Zen Kaku Gothic New", sans-serif;
@@ -213,17 +214,18 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
 }
 .scroll-hint {
   margin-top: 7vh;
-  color: var(--clay);
+  color: var(--icon);
   animation: drift 3.4s ease-in-out infinite;
 }
+.scroll-hint svg { stroke-width: 0.85; }
 @keyframes drift {
   0%, 100% { transform: translateY(0); opacity: 0.5; }
   50%       { transform: translateY(8px); opacity: 1; }
 }
 
 /* ── illustration slot ── */
-.illust { margin: 6vh auto; color: var(--clay); opacity: 0.8; }
-.illust svg { display: block; margin: 0 auto; }
+.illust { margin: 6vh auto; color: var(--icon); opacity: 0.85; }
+.illust svg { display: block; margin: 0 auto; stroke-width: 0.8; }
 
 /* ── state-viz (循環図) ── */
 .state-viz {
@@ -237,9 +239,9 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
 .mark {
   display: block;
   margin: calc(7vh * var(--rhythm, 1)) auto;
-  color: var(--clay);
+  color: var(--icon);
 }
-.mark svg { display: block; margin: 0 auto; }
+.mark svg { display: block; margin: 0 auto; stroke-width: 0.8; }
 .linkmark { color: var(--clay); margin: 0 auto 16px; }
 .linkmark svg { display: block; margin: 0 auto; }
 
@@ -344,7 +346,8 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
 .triad { font-family: var(--mincho); font-size: 20px; line-height: 2.7; }
 
 /* ── breath animation ── */
-.breath { margin: 9vh auto; }
+.breath { margin: 9vh auto; color: var(--icon); }
+.breath svg { stroke-width: 0.8; }
 .breath circle {
   transform-origin: center;
   animation: breathe 7s ease-in-out infinite;
@@ -378,11 +381,56 @@ footer {
   padding: 13vh 28px 8vh;
 }
 footer .contact { margin-bottom: 2vh; }
-footer .ft-title {
-  font-family: var(--gothic);
-  font-size: 16px;
-  letter-spacing: 0.2em;
+footer .ft-od-logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--clay);
+  margin-bottom: 2px;
+}
+footer .ft-od-mark {
+  width: 68px;
+  height: auto;
+  display: block;
+}
+footer .ft-od-name {
+  font-family: "Cormorant", serif;
   font-weight: 500;
+  font-size: 28px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  line-height: 1;
+}
+footer .ft-bmr-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #8A4030;
+  text-decoration: none;
+  border-bottom: none;
+  padding-bottom: 0;
+  transition: opacity 0.28s ease;
+}
+footer .ft-bmr-logo:hover { opacity: 0.72; }
+footer .ft-bmr-mark {
+  width: 32px;
+  height: 32px;
+  display: block;
+  flex-shrink: 0;
+}
+footer .ft-bmr-name {
+  font-family: "Fraunces", serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: #8A4030;
+  line-height: 1;
+}
+footer .ft-reg {
+  font-size: 0.55em;
+  vertical-align: super;
+  font-style: normal;
 }
 footer .ft-tag {
   font-family: var(--mincho);
