@@ -41,18 +41,31 @@ const {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500&family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap"
     />
 
     <slot name="head" />
   </head>
 
   <body>
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="od-mark" viewBox="0 0 100 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 24.0L8 24.6L10 25.4L12 26.4L14 27.6L16 28.8L18 30.0L20 31.1L22 32.1L24 32.9L26 33.4L28 33.6L30 33.4L32 32.9L34 32.1L36 30.9L38 29.4L40 27.6L42 25.7L44 23.6L46 21.5L48 19.4L50 17.4L52 15.5L54 13.9L56 12.6L58 11.6L60 11.0L62 10.8L64 10.9L66 11.4L68 12.2L70 13.3L72 14.6L74 16.0L76 17.5L78 19.0L80 20.4L82 21.7L84 22.8L86 23.6L88 24.2L90 24.4L92 24.4L94 24.0"/>
+          <path d="M6 24.0L8 23.4L10 22.6L12 21.6L14 20.4L16 19.2L18 18.0L20 16.9L22 15.9L24 15.1L26 14.6L28 14.4L30 14.6L32 15.1L34 15.9L36 17.1L38 18.6L40 20.4L42 22.3L44 24.4L46 26.5L48 28.6L50 30.6L52 32.5L54 34.1L56 35.4L58 36.4L60 37.0L62 37.2L64 37.1L66 36.6L68 35.8L70 34.7L72 33.4L74 32.0L76 30.5L78 29.0L80 27.6L82 26.3L84 25.2L86 24.4L88 23.8L90 23.6L92 23.6L94 24.0"/>
+        </g>
+      </symbol>
+    </svg>
+
     <nav>
-      <div class="brand">
-        <b>Body OD</b>
-        身体を入口にした 場と空気の探究
-      </div>
+      <a href="/od" class="od-logo" aria-label="Body OD">
+        <svg class="od-mark" viewBox="0 0 100 48"><use href="#od-mark"/></svg>
+        <div class="od-wm">
+          <span class="od-name">Body OD</span>
+          <span class="od-tag">身体を入口にした 場と空気の探究</span>
+        </div>
+      </a>
       <div class="links">
         <a href="https://bmr.navigatejpn.com" target="_blank" rel="noopener noreferrer">Body-Mind Reading®</a>
         <a href="/research">文献マップ</a>

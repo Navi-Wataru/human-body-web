@@ -78,20 +78,40 @@ nav {
   font-family: var(--gothic);
   font-weight: 400;
 }
-nav .brand {
-  text-align: left;
-  font-size: 12px;
-  line-height: 1.65;
+nav .od-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: var(--clay);
+  flex-shrink: 0;
+}
+nav .od-mark {
+  width: 52px;
+  height: auto;
+  display: block;
+  flex-shrink: 0;
+}
+nav .od-wm {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+nav .od-name {
+  font-family: "Cormorant", serif;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  line-height: 1;
+}
+nav .od-tag {
+  font-family: var(--gothic);
+  font-weight: 400;
+  font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--ink-soft);
-}
-nav .brand b {
-  font-weight: 500;
-  display: block;
-  font-size: 15px;
-  letter-spacing: 0.18em;
-  color: var(--ink);
-  margin-bottom: 3px;
+  line-height: 1;
 }
 nav .links {
   display: flex;
@@ -403,6 +423,9 @@ a:focus-visible, [tabindex]:focus-visible {
 /* ── responsive ── */
 @media (max-width: 760px) {
   nav { padding: 24px 22px 0; gap: 16px; }
+  nav .od-mark { width: 40px; }
+  nav .od-name { font-size: 18px; }
+  nav .od-tag { display: none; }
   nav .links { gap: 18px; font-size: 12px; flex-wrap: wrap; justify-content: flex-end; }
   .cards { grid-template-columns: 1fr; gap: 14px; }
   .cards-wrap { padding: 0 22px; }
