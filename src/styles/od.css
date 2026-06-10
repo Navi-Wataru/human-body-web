@@ -242,8 +242,41 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
   color: var(--icon);
 }
 .mark svg { display: block; margin: 0 auto; stroke-width: 0.8; }
-.linkmark { color: var(--clay); margin: 0 auto 16px; }
-.linkmark svg { display: block; margin: 0 auto; }
+/* ── research bridge ── */
+.research-bridge {
+  border-top: 1px solid var(--line);
+  padding-top: 7vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: var(--clay);
+}
+.research-mark {
+  width: 86px;
+  height: auto;
+  display: block;
+}
+.research-name {
+  font-family: var(--mincho);
+  font-weight: 500;
+  font-size: 21px;
+  letter-spacing: 0.22em;
+  color: var(--clay);
+  margin: 4px 0 0;
+}
+.research-desc {
+  font-family: var(--gothic);
+  font-weight: 300;
+  font-size: 13.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.research-link {
+  font-size: 14px;
+  margin-top: 4px;
+}
 
 /* ── training cards ── */
 .cards-wrap { max-width: 940px; margin: 0 auto; padding: 0 24px; }
