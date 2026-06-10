@@ -278,6 +278,69 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
   margin-top: 4px;
 }
 
+/* ── research feature (文献マップ) ── */
+.research-feature {
+  border-top: 1px solid var(--line);
+  padding-top: 7vh;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 44px;
+  align-items: center;
+  text-align: left;
+}
+.research-feature-img img {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+}
+.research-feature-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.research-feature-body .section-label {
+  margin-bottom: 0;
+  text-align: left;
+}
+.research-feature-body .section-label::after {
+  margin-left: 0;
+}
+.research-feature-title {
+  font-family: var(--mincho);
+  font-weight: 500;
+  font-size: clamp(22px, 3.2vw, 30px);
+  letter-spacing: 0.22em;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.5;
+}
+.research-feature-desc {
+  font-family: var(--mincho);
+  font-size: 17px;
+  line-height: 2.15;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.research-feature-cta {
+  align-self: flex-start;
+  font-size: 14px;
+  margin-top: 4px;
+}
+@media (max-width: 760px) {
+  .research-feature {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    text-align: center;
+  }
+  .research-feature-img {
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .research-feature-body .section-label { text-align: center; }
+  .research-feature-body .section-label::after { margin-left: auto; }
+  .research-feature-cta { align-self: center; }
+}
+
 /* ── training cards ── */
 .cards-wrap { max-width: 940px; margin: 0 auto; padding: 0 24px; }
 .cards {
