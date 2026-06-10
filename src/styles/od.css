@@ -628,8 +628,7 @@ a:focus-visible, [tabindex]:focus-visible {
   .card-illust { aspect-ratio: 7/2; }
   .wrap { padding: 0 22px; }
   body { line-height: 1.95; }
-  /* モバイル: 非表示（ヒーローが詰まるため） */
-  .hero-pos { display: none; }
+  .hero-pos { font-size: 10px; letter-spacing: 0.12em; margin-bottom: 2vh; }
   .hero { padding-top: 0; }
 }
 /* ── Hero positioning line ── */
@@ -642,13 +641,9 @@ a:focus-visible, [tabindex]:focus-visible {
   padding: 0 28px;
   max-width: 560px;
   text-align: center;
-  /* PC: ヒーロー上部に独立配置 */
-  position: absolute;
-  top: 10vh;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
+  position: relative;
   z-index: 1;
+  margin-bottom: 3vh;
 }
 
 /* ── Hero CTA buttons ── */
