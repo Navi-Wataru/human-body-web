@@ -911,9 +911,14 @@ a:focus-visible, [tabindex]:focus-visible {
 /* ── BMR flow grid (3-step screenshots) ── */
 .bmr-flow-grid {
   display: flex;
-  gap: 14px;
-  max-width: 660px;
-  margin: calc(5vh * var(--rhythm, 1)) auto;
+  gap: 18px;
+  /* wrapの660px制約を突き破ってviewport基準で配置 */
+  width: min(880px, calc(100vw - 48px));
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: calc(5vh * var(--rhythm, 1));
+  margin-bottom: calc(5vh * var(--rhythm, 1));
   align-items: flex-start;
 }
 .bmr-flow-item {
@@ -922,27 +927,24 @@ a:focus-visible, [tabindex]:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 .bmr-flow-img-wrap {
   width: 100%;
-  aspect-ratio: 3 / 5;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(52, 48, 42, 0.10);
+  box-shadow: 0 4px 18px rgba(52, 48, 42, 0.10);
   border: 1px solid var(--line);
 }
 .bmr-flow-img-wrap img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  height: auto;
 }
 .bmr-flow-caption {
   font-family: var(--gothic);
   font-weight: 300;
-  font-size: 11.5px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   color: var(--ink-soft);
   text-align: center;
@@ -1008,9 +1010,17 @@ a:focus-visible, [tabindex]:focus-visible {
   .bmr-features { grid-template-columns: 1fr; gap: 10px; }
   .hero-cta { gap: 12px; margin-top: 42px; }
   .btn { font-size: 13px; padding: 12px 28px; }
-  .bmr-flow-grid { flex-direction: column; gap: 24px; max-width: 420px; }
-  .bmr-flow-img-wrap { aspect-ratio: auto; }
-  .bmr-flow-img-wrap img { height: auto; object-fit: initial; }
+  .bmr-flow-grid {
+    flex-direction: column;
+    gap: 28px;
+    width: calc(100vw - 48px);
+    left: 0;
+    transform: none;
+    max-width: 420px;
+    position: static;
+    margin-left: auto;
+    margin-right: auto;
+  }
   .about-event-grid { flex-direction: column; }
 }
 
