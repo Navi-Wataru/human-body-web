@@ -345,6 +345,19 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
 .indent { display: inline-block; text-align: left; }
 .triad { font-family: var(--mincho); font-size: 20px; line-height: 2.7; }
 
+/* ── section image ── */
+.sec-img {
+  margin: calc(8vh * var(--rhythm, 1)) auto;
+  max-width: 520px;
+  width: 100%;
+}
+.sec-img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
 /* ── breath animation ── */
 .breath { margin: 9vh auto; color: var(--icon); }
 .breath svg { stroke-width: 0.8; }
