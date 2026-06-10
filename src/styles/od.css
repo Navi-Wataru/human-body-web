@@ -968,13 +968,11 @@ a:focus-visible, [tabindex]:focus-visible {
 }
 .about-event-grid {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  align-items: flex-start;
 }
 .about-event-item {
-  flex: 1;
-  min-width: 0;
-  max-width: calc(50% - 6px);
+  width: 100%;
 }
 .about-event-item a {
   display: block;
@@ -1020,7 +1018,7 @@ a:focus-visible, [tabindex]:focus-visible {
     margin-left: auto;
     margin-right: auto;
   }
-  .about-event-grid { flex-direction: column; }
+  /* .about-event-grid は常に縦積みのため上書き不要 */
 }
 
 @media (prefers-reduced-motion: reduce) {
