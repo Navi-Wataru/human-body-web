@@ -892,7 +892,9 @@ a:focus-visible, [tabindex]:focus-visible {
 .about-event-item img {
   display: block;
   width: 100%;
-  height: auto;
+  aspect-ratio: 560 / 273;
+  object-fit: cover;
+  object-position: center;
   border-radius: 6px;
   border: 1px solid var(--line);
 }
