@@ -646,6 +646,22 @@ a:focus-visible, [tabindex]:focus-visible {
   margin-bottom: 3vh;
 }
 
+/* ── Hero byline ── */
+.hero-byline {
+  font-family: var(--gothic);
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--clay);
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+  display: block;
+  text-align: center;
+}
+.hero-byline:hover { text-decoration: underline; }
+
 /* ── Hero CTA buttons ── */
 .hero-cta {
   display: flex;
@@ -882,6 +898,35 @@ a:focus-visible, [tabindex]:focus-visible {
   letter-spacing: 0.3em;
   color: var(--ink-soft);
   margin: 6px 0 28px;
+  opacity: 0.75;
+}
+
+/* ── contact mail address display ── */
+.contact-mail-address {
+  font-family: var(--gothic);
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin-top: 6px;
+  user-select: all;
+}
+
+/* ── mid-section CTA link ── */
+.mid-cta-link {
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* ── BMR privacy note ── */
+.bmr-privacy-note {
+  font-family: var(--gothic);
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  margin-top: 8px;
+  text-align: center;
   opacity: 0.75;
 }
 
