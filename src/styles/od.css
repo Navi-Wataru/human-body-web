@@ -953,7 +953,8 @@ a:focus-visible, [tabindex]:focus-visible {
 
 /* ── About event banners ── */
 .about-events {
-  max-width: 560px;
+  max-width: 520px;
+  width: 100%;
   margin: 0 auto calc(5vh * var(--rhythm, 1));
 }
 .about-events-label {
@@ -968,24 +969,25 @@ a:focus-visible, [tabindex]:focus-visible {
 .about-event-grid {
   display: flex;
   gap: 12px;
+  align-items: flex-start;
 }
 .about-event-item {
   flex: 1;
   min-width: 0;
+  max-width: calc(50% - 6px);
 }
 .about-event-item a {
   display: block;
   border-bottom: none;
 }
-.about-event-item a:hover { opacity: 0.82; }
+.about-event-item a:hover { opacity: 0.82; transition: opacity 0.25s; }
 .about-event-item img {
   display: block;
   width: 100%;
-  aspect-ratio: 560 / 273;
-  object-fit: cover;
-  object-position: center;
+  height: auto;
   border-radius: 6px;
   border: 1px solid var(--line);
+  box-shadow: 0 2px 10px rgba(52,48,42,0.08);
 }
 .about-event-placeholder {
   width: 100%;
