@@ -627,6 +627,15 @@ a:focus-visible, [tabindex]:focus-visible {
   .card-illust { aspect-ratio: 7/2; }
   .wrap { padding: 0 22px; }
   body { line-height: 1.95; }
+  /* モバイル: フロー内に戻す */
+  .hero-pos {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    white-space: normal;
+    margin: 0 0 28px;
+  }
 }
 /* ── Hero positioning line ── */
 .hero-pos {
@@ -635,12 +644,16 @@ a:focus-visible, [tabindex]:focus-visible {
   font-size: 12px;
   letter-spacing: 0.18em;
   color: var(--clay);
-  margin: 0 0 36px;
   padding: 0 28px;
-  position: relative;
-  z-index: 1;
   max-width: 560px;
   text-align: center;
+  /* PC: ヒーロー上部に独立配置してナビと余白を確保 */
+  position: absolute;
+  top: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 1;
 }
 
 /* ── Hero CTA buttons ── */
