@@ -172,6 +172,7 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
 /* ── hero ── */
 .hero {
   min-height: 88vh;
+  padding-top: 7vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -627,15 +628,9 @@ a:focus-visible, [tabindex]:focus-visible {
   .card-illust { aspect-ratio: 7/2; }
   .wrap { padding: 0 22px; }
   body { line-height: 1.95; }
-  /* モバイル: フロー内に戻す */
-  .hero-pos {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    white-space: normal;
-    margin: 0 0 28px;
-  }
+  /* モバイル: 非表示（ヒーローが詰まるため） */
+  .hero-pos { display: none; }
+  .hero { padding-top: 0; }
 }
 /* ── Hero positioning line ── */
 .hero-pos {
@@ -647,9 +642,9 @@ a:focus-visible, [tabindex]:focus-visible {
   padding: 0 28px;
   max-width: 560px;
   text-align: center;
-  /* PC: ヒーロー上部に独立配置してナビと余白を確保 */
+  /* PC: ヒーロー上部に独立配置 */
   position: absolute;
-  top: 8vh;
+  top: 10vh;
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
