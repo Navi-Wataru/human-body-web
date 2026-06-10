@@ -403,6 +403,33 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
   50%       { transform: scale(1.06); opacity: 0.95; }
 }
 
+/* ── CTA BMR logo ── */
+.cta-bmr-logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: #8A4030;
+  text-decoration: none;
+  border-bottom: none;
+  margin-bottom: 6px;
+  transition: opacity 0.28s ease;
+}
+.cta-bmr-logo:hover { opacity: 0.72; }
+.cta-bmr-mark {
+  width: 80px;
+  height: 80px;
+  display: block;
+}
+.cta-bmr-name {
+  font-family: "Fraunces", serif;
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  color: #8A4030;
+  line-height: 1.1;
+}
+
 /* ── CTA / footer ── */
 .cta a, .contact a, .link-clay {
   font-family: var(--gothic);
