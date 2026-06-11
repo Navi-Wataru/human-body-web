@@ -625,7 +625,14 @@ a:focus-visible, [tabindex]:focus-visible {
   nav .links { gap: 18px; font-size: 12px; flex-wrap: wrap; justify-content: flex-end; }
   .cards { grid-template-columns: 1fr; gap: 28px; }
   .cards-wrap { padding: 0 22px; }
-  .card-illust { aspect-ratio: 4/5; height: auto; margin-bottom: 10px; }
+  /* カード: タイトルをイラスト上にオーバーレイ */
+  .card { display: grid; grid-template-columns: 1fr; padding: 0 0 24px; }
+  .card-illust { aspect-ratio: 4/3; height: auto; margin-bottom: 0; position: relative; z-index: 0; grid-row: 1; grid-column: 1; }
+  .card-illust::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: linear-gradient(to top, rgba(246,243,236,0.93) 0%, transparent 100%); pointer-events: none; z-index: 1; }
+  .card .k { grid-row: 1; grid-column: 1; align-self: end; position: relative; z-index: 2; padding: 0 24px 52px; }
+  .card .name { grid-row: 1; grid-column: 1; align-self: end; position: relative; z-index: 2; padding: 0 24px 16px; margin: 0; }
+  .card .row { padding-left: 24px; padding-right: 24px; }
+  .card .ask { padding-left: 24px; padding-right: 24px; }
   .wrap { padding: 0 22px; }
   body { line-height: 1.95; }
   .hero-pos { font-size: 10px; letter-spacing: 0.12em; margin-bottom: 2vh; }
