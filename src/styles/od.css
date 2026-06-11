@@ -630,6 +630,7 @@ a:focus-visible, [tabindex]:focus-visible {
   body { line-height: 1.95; }
   .hero-pos { font-size: 10px; letter-spacing: 0.12em; margin-bottom: 2vh; }
   .hero { padding-top: 0; }
+  .hero h1 { word-break: keep-all; letter-spacing: 0.10em; }
 }
 /* ── Hero positioning line ── */
 .hero-pos {
