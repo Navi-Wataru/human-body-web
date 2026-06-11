@@ -410,14 +410,14 @@ p { margin: 0 0 calc(1.7em * var(--rhythm, 1)); }
 /* card 1: KINEMATICS */
 .card.kinematics {
   background: var(--cream-deep);
-  border: 1px solid rgba(52, 48, 42, 0.26);
+  border: 1px solid transparent;
   font-family: var(--gothic);
-  border-radius: 2px;
+  border-radius: 10px;
 }
 .card.kinematics .name { font-family: var(--gothic); }
-.card.kinematics .row { border-top: 1px solid rgba(52, 48, 42, 0.16); }
-.card.kinematics .ask { border-top: 1px solid rgba(52, 48, 42, 0.16); padding-top: 16px; }
-.card.kinematics .card-illust { border: 1px solid rgba(52, 48, 42, 0.26); border-radius: 2px; }
+.card.kinematics .row { border-top: 1px solid var(--line); }
+.card.kinematics .ask { border-top: 1px solid var(--line); padding-top: 16px; }
+.card.kinematics .card-illust { border: 1px solid var(--line); border-radius: 12px; }
 
 /* card 2: KINETICS */
 .card.kinetics {
