@@ -625,7 +625,7 @@ a:focus-visible, [tabindex]:focus-visible {
   nav .links { gap: 18px; font-size: 12px; flex-wrap: wrap; justify-content: flex-end; }
   .cards { grid-template-columns: 1fr; gap: 28px; }
   .cards-wrap { padding: 0 22px; }
-  .card-illust { aspect-ratio: unset; height: 108px; margin-bottom: 10px; }
+  .card-illust { aspect-ratio: 4/5; height: auto; margin-bottom: 10px; }
   .wrap { padding: 0 22px; }
   body { line-height: 1.95; }
   .hero-pos { font-size: 10px; letter-spacing: 0.12em; margin-bottom: 2vh; }
