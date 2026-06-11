@@ -623,9 +623,9 @@ a:focus-visible, [tabindex]:focus-visible {
   nav .od-name { font-size: 18px; }
   nav .od-tag { display: none; }
   nav .links { gap: 18px; font-size: 12px; flex-wrap: wrap; justify-content: flex-end; }
-  .cards { grid-template-columns: 1fr; gap: 14px; }
+  .cards { grid-template-columns: 1fr; gap: 28px; }
   .cards-wrap { padding: 0 22px; }
-  .card-illust { aspect-ratio: 7/2; }
+  .card-illust { aspect-ratio: unset; height: 108px; margin-bottom: 10px; }
   .wrap { padding: 0 22px; }
   body { line-height: 1.95; }
   .hero-pos { font-size: 10px; letter-spacing: 0.12em; margin-bottom: 2vh; }
@@ -1043,6 +1043,15 @@ a:focus-visible, [tabindex]:focus-visible {
 
 /* ── responsive additions ── */
 @media (max-width: 760px) {
+  /* ── card compact (mobile only) ── */
+  .card                    { padding: 14px 16px; }
+  .card.kinesthetics       { padding: 14px 16px; }
+  .card .name              { margin: 4px 0 10px; }
+  .card .row               { padding: 6px 0; }
+  .card .row .v            { line-height: 1.6; }
+  .card .ask               { padding-top: 8px; }
+  .card.kinematics .ask    { padding-top: 8px; }
+
   .bmr-features { grid-template-columns: 1fr; gap: 10px; }
   .hero-cta { gap: 12px; margin-top: 42px; }
   .btn { font-size: 13px; padding: 12px 28px; }
