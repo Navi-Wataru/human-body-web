@@ -7,13 +7,22 @@
     aria-hidden="true"
     class="hero-bg"
   />
+
+  <!-- 上スペーサー：h1を縦中央に押し上げる -->
+  <div class="hero-spacer" aria-hidden="true"></div>
+
   <h1>しっくりくると、<br />うまくいく。</h1>
-  <div class="sub reveal">身体を入口に、<br />しっくり感を取り戻す。</div>
-  <a class="hero-byline reveal" href="#about">早田 航 — トレーナー歴16年・身体のプロフェッショナル</a>
-  <div class="hero-cta">
-    <a class="btn btn-primary" href="https://bmr.navigatejpn.com" target="_blank" rel="noopener noreferrer">Body-Mind Reading® を体験する<span class="btn-note">約5分・ログイン不要</span></a>
-    <a class="btn btn-secondary" href="#contact">問いを持ち寄る</a>
+
+  <!-- 下エリア：h1と同じflex比でバランスをとる -->
+  <div class="hero-foot">
+    <div class="sub reveal">身体を入口に、<br />しっくり感を取り戻す。</div>
+    <a class="hero-byline reveal" href="#about">早田 航 — トレーナー歴16年・身体のプロフェッショナル</a>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://bmr.navigatejpn.com" target="_blank" rel="noopener noreferrer">Body-Mind Reading® を体験する<span class="btn-note">約5分・ログイン不要</span></a>
+      <a class="btn btn-secondary" href="#contact">問いを持ち寄る</a>
+    </div>
   </div>
+
   <div class="scroll-hint" aria-hidden="true">
     <svg width="22" height="34" viewBox="0 0 22 34" fill="none" stroke="currentColor" stroke-width="1.2">
       <rect x="1" y="1" width="20" height="32" rx="10" />
@@ -21,3 +30,61 @@
     </svg>
   </div>
 </section>
+
+<style>
+  /* hero を 100vh に拡張し、flex-start で積み上げる */
+  .hero {
+    min-height: 100vh;
+    padding-top: 0;
+    justify-content: flex-start;
+  }
+
+  /* 上スペーサー：残余高さを1:1で上下に分配する */
+  .hero-spacer {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* h1 は縦中央の軸として固定 */
+  .hero h1 {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 下エリア：上スペーサーと同じ比率で空間を持つ */
+  .hero-foot {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 36px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  /* sub の margin-top はhero-footのpadding-topで代替 */
+  .hero-foot .sub {
+    margin-top: 0;
+  }
+
+  .hero-foot .hero-byline {
+    margin-top: 14px;
+  }
+
+  .hero-foot .hero-cta {
+    margin-top: 36px;
+  }
+
+  /* スクロールヒントは下端に絶対配置 */
+  .scroll-hint {
+    position: absolute;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+  }
+</style>
