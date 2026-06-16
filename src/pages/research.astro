@@ -182,7 +182,17 @@ const clustersJSON   = JSON.stringify(clusterList);
 <!-- NAV BAR -->
 <nav id="topbar">
   <a href="/od" id="back-link">← Body-Mind Reading®</a>
-  <span id="topbar-title">文献マップ</span>
+  <span id="topbar-title">
+    <svg width="12" height="12" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" style="flex-shrink:0;">
+      <circle cx="6.5" cy="1.5" r="1.5" fill="currentColor" stroke="none"/>
+      <circle cx="1.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/>
+      <circle cx="11.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/>
+      <line x1="6.5" y1="1.5" x2="1.5" y2="10.5"/>
+      <line x1="6.5" y1="1.5" x2="11.5" y2="10.5"/>
+      <line x1="1.5" y1="10.5" x2="11.5" y2="10.5"/>
+    </svg>
+    文献マップ
+  </span>
   <span id="topbar-count"></span>
   <button id="sidebar-toggle">フィルター</button>
 </nav>
@@ -286,6 +296,9 @@ const clustersJSON   = JSON.stringify(clusterList);
   }
   #back-link:hover { color: #1a1a18; }
   #topbar-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 12px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
