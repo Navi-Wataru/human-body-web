@@ -62,7 +62,17 @@ const {
         </div>
       </a>
       <div class="links">
-        <a href="/research">文献マップ</a>
+        <a href="/research" class="nav-research">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <circle cx="6.5" cy="1.5" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="1.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="11.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/>
+            <line x1="6.5" y1="1.5" x2="1.5" y2="10.5"/>
+            <line x1="6.5" y1="1.5" x2="11.5" y2="10.5"/>
+            <line x1="1.5" y1="10.5" x2="11.5" y2="10.5"/>
+          </svg>
+          文献マップ
+        </a>
         <a href="#about">Profile</a>
       </div>
     </nav>
@@ -83,5 +93,12 @@ const {
       );
       document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
     </script>
+    <style>
+      .nav-research {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+    </style>
   </body>
 </html>
